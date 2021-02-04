@@ -61,6 +61,7 @@ Todo esto teniendo siempre en cuenta la distinción entre ambas disciplinas, es 
 **Herramientas y Frameworks:**
 - Bootstrap 4.
 - Sass.
+- React.
 - Google API / OpenStreetMap.
 
 **Backend:**
@@ -68,9 +69,9 @@ Todo esto teniendo siempre en cuenta la distinción entre ambas disciplinas, es 
 - SQL (MariaDB).
 - HeidiSQL (Cliente).
 
-**Progressive Web App (PWA):**
+**Progressive Web AppO (PWA):**
 - Node.js.
-- PhoneGap / Apache Cordova / React Native.
+- Cordova / React Native / Ionic.
 
 
 ## Desarrollo
