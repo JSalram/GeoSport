@@ -58,16 +58,17 @@ Todo esto teniendo siempre en cuenta la distinción entre ambas disciplinas, es 
 - CSS.
 - JavaScript.
 
-**Herramientas y Frameworks:**
-- Bootstrap 4.
-- Sass.
-- React.
-- Google API / OpenStreetMap.
-
 **Backend:**
 - PHP.
 - SQL (MariaDB).
 - HeidiSQL (Cliente).
+
+**Herramientas y Frameworks:**
+- Bootstrap 4.
+- Sass.
+- Symfony.
+- React.
+- Leaflet (OpenStreetMap).
 
 **Progressive Web AppO (PWA):**
 - Node.js.
