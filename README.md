@@ -70,7 +70,7 @@ Todo esto teniendo siempre en cuenta la distinción entre ambas disciplinas, es 
 - React.
 - Leaflet (OpenStreetMap).
 
-**Progressive Web AppO (PWA):**
+**Progressive Web App (PWA):**
 - Node.js.
 - Cordova / React Native / Ionic.
 
