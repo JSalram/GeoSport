@@ -1,0 +1,46 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Iniciar sesión{% endblock %}
+
+{% block body %}
+    <h2 class="text-center my-3">Iniciar sesión</h2>
+
+    <div class="row justify-content-center">
+        <div class="col-lg-6 p-5 border shadow">
+
+            <form method="post">
+                {% if error %}
+                    <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+                {% endif %}
+
+                {% if app.user %}
+                    <div class="mb-3">
+                        You are logged in as {{ app.user.username }}, <a href="{{ path('logout') }}">Logout</a>
+                    </div>
+                {% endif %}
+
+                <label for="inputUsername">Nombre de usuario</label>
+                <input type="text" value="{{ last_username }}" name="username" id="inputUsername" class="form-control"
+                       required
+                       autofocus>
+                <label for="inputPassword">Contraseña</label>
+                <input type="password" name="password" id="inputPassword" class="form-control" required>
+
+                <input type="hidden" name="_csrf_token"
+                       value="{{ csrf_token('authenticate') }}"
+                >
+
+                <div class="checkbox mb-3">
+                    <label>
+                        <input type="checkbox" name="_remember_me"> Recuérdame
+                    </label>
+                </div>
+
+                <button class="btn btn-primary" type="submit">
+                    Enviar
+                </button>
+            </form>
+
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,18 @@
+header {
+    position: relative;
+
+    height: 50vh;
+    background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(125, 125, 125, 0.5)),
+    url('../img/skate_header.jpg');
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+}
+
+#header-text {
+    /* TODO: Eliminar px en producción - Necesario en desarrollo */
+    text-shadow: 0px 2px 5px white;
+    position: absolute;
+    top: 15%;
+    left: 5%;
+}

@@ -1,0 +1,5 @@
+nav.navbar {
+    /* TODO: Eliminar px en producción - Necesario en desarrollo */
+    box-shadow: 0px 2px 5px black;
+    z-index: 100;
+}

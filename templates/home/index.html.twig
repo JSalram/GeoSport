@@ -1,0 +1,30 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Inicio{% endblock %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('css/index.css') }}">
+{% endblock %}
+
+{% block body %}
+    <header>
+        <div class="container-fluid">
+            <div id="header-text">
+                <h1>GeoSport</h1>
+                {% if app.user %}
+                    <h3>Bienvenido, {{ app.user.username | capitalize }}</h3>
+                {% endif %}
+            </div>
+        </div>
+    </header>
+
+    <div class="container my-2">
+        <h2>Provincias</h2>
+
+        <div class="row">
+        {% for provincia in provincias %}
+            <div class="col-3">- {{ provincia.nombre }}</div>
+        {% endfor %}
+        </div>
+    </div>
+{% endblock %}
