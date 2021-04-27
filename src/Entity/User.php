@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -42,15 +44,33 @@ class User implements UserInterface
     private $email;
 
     /**
-     * User constructor.
-     * @param $username
-     * @param string $password
-     * @param $email
+     * @ORM\OneToMany(targetEntity=Valoracion::class, mappedBy="usuario", orphanRemoval=true)
      */
-    public function __construct($email=null, $username=null)
+    private $valoraciones;
+
+    /**
+     * @ORM\OneToMany(targetEntity=Spot::class, mappedBy="user")
+     */
+    private $spots;
+
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $isVerified = false;
+
+    /**
+     * User constructor.
+     * @param null $email
+     * @param null $username
+     * @param null $password
+     */
+    public function __construct($email = null, $username = null, $password = null)
     {
         $this->email = $email;
         $this->username = $username;
+        $this->password = $password;
+        $this->valoraciones = new ArrayCollection();
+        $this->spots = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -137,6 +157,78 @@ class User implements UserInterface
     public function setEmail(string $email): self
     {
         $this->email = $email;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Valoracion[]
+     */
+    public function getValoraciones(): Collection
+    {
+        return $this->valoraciones;
+    }
+
+    public function addValoracion(Valoracion $valoracion): self
+    {
+        if (!$this->valoraciones->contains($valoracion)) {
+            $this->valoraciones[] = $valoracion;
+            $valoracion->setUsuario($this);
+        }
+
+        return $this;
+    }
+
+    public function removeValoracion(Valoracion $valoracion): self
+    {
+        if ($this->valoraciones->removeElement($valoracion)) {
+            // set the owning side to null (unless already changed)
+            if ($valoracion->getUsuario() === $this) {
+                $valoracion->setUsuario(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Spot[]
+     */
+    public function getSpots(): Collection
+    {
+        return $this->spots;
+    }
+
+    public function addSpot(Spot $spot): self
+    {
+        if (!$this->spots->contains($spot)) {
+            $this->spots[] = $spot;
+            $spot->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeSpot(Spot $spot): self
+    {
+        if ($this->spots->removeElement($spot)) {
+            // set the owning side to null (unless already changed)
+            if ($spot->getUser() === $this) {
+                $spot->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function isVerified(): bool
+    {
+        return $this->isVerified;
+    }
+
+    public function setIsVerified(bool $isVerified): self
+    {
+        $this->isVerified = $isVerified;
 
         return $this;
     }

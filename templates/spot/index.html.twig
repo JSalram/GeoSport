@@ -1,0 +1,35 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ deporte|capitalize }}{% endblock %}
+
+{% block body %}
+    <div class="container my-3">
+        <h2>{{ deporte|capitalize }}</h2>
+
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nombre</th>
+                <th>Deporte</th>
+                <th>Provincia</th>
+                <th>Creado por</th>
+                <th>Fecha</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for spot in spots %}
+                <tr>
+                    <th>{{ spot.id }}</th>
+                    <td><a href="{{ path('spot_view', {'deporte': deporte, 'id': spot.id}) }}">{{ spot.nombre }}</a>
+                    </td>
+                    <td>{{ spot.deporte.nombre|capitalize }}</td>
+                    <td>{{ spot.provincia.nombre }}</td>
+                    <td>{{ spot.user.username }}</td>
+                    <td>{{ spot.fecha|date('d/m/Y') }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}

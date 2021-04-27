@@ -2,15 +2,15 @@
 
 namespace App\Entity;
 
-use App\Repository\ProvinciaRepository;
+use App\Repository\DeporteRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity(repositoryClass=ProvinciaRepository::class)
+ * @ORM\Entity(repositoryClass=DeporteRepository::class)
  */
-class Provincia
+class Deporte
 {
     /**
      * @ORM\Id
@@ -20,22 +20,29 @@ class Provincia
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=255, unique=true)
+     * @ORM\Column(type="string", length=100)
      */
     private $nombre;
 
     /**
-     * @ORM\OneToMany(targetEntity=Spot::class, mappedBy="provincia")
+     * @ORM\Column(type="string", length=500, nullable=true)
+     */
+    private $descripcion;
+
+    /**
+     * @ORM\OneToMany(targetEntity=Spot::class, mappedBy="deporte", orphanRemoval=true)
      */
     private $spots;
 
     /**
-     * Provincia constructor.
+     * Deporte constructor.
      * @param $nombre
+     * @param $descripcion
      */
-    public function __construct($nombre = null)
+    public function __construct($nombre = null, $descripcion = null)
     {
         $this->nombre = $nombre;
+        $this->descripcion = $descripcion;
         $this->spots = new ArrayCollection();
     }
 
@@ -56,6 +63,18 @@ class Provincia
         return $this;
     }
 
+    public function getDescripcion(): ?string
+    {
+        return $this->descripcion;
+    }
+
+    public function setDescripcion(?string $descripcion): self
+    {
+        $this->descripcion = $descripcion;
+
+        return $this;
+    }
+
     /**
      * @return Collection|Spot[]
      */
@@ -68,7 +87,7 @@ class Provincia
     {
         if (!$this->spots->contains($spot)) {
             $this->spots[] = $spot;
-            $spot->setProvincia($this);
+            $spot->setDeporte($this);
         }
 
         return $this;
@@ -78,8 +97,8 @@ class Provincia
     {
         if ($this->spots->removeElement($spot)) {
             // set the owning side to null (unless already changed)
-            if ($spot->getProvincia() === $this) {
-                $spot->setProvincia(null);
+            if ($spot->getDeporte() === $this) {
+                $spot->setDeporte(null);
             }
         }
 

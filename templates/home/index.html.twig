@@ -7,24 +7,132 @@
 {% endblock %}
 
 {% block body %}
+    {# CABECERA #}
     <header>
-        <div class="container-fluid">
-            <div id="header-text">
-                <h1>GeoSport</h1>
-                {% if app.user %}
-                    <h3>Bienvenido, {{ app.user.username | capitalize }}</h3>
-                {% endif %}
+        <div id="imgHeader" class="carousel slide" data-bs-ride="carousel">
+            <div class="carousel-indicators">
+                <button type="button" data-bs-target="#imgHeader" data-bs-slide-to="0" class="active"
+                        aria-current="true" aria-label="Slide 1"></button>
+                <button type="button" data-bs-target="#imgHeader" data-bs-slide-to="1"
+                        aria-label="Slide 2"></button>
             </div>
+            <div class="carousel-inner">
+                {% for deporte in deportes %}
+                    <div class="carousel-item {{ loop.first ? 'active' }}">
+                        <a href="{{ path('spots', { 'deporte': deporte.nombre }) }}">
+                            <img src="{{ asset('img/'~ deporte.nombre ~'_header.jpg') }}" class="d-block w-100" alt="">
+                        </a>
+                        <div class="carousel-caption d-none d-md-block">
+                            <h5>{{ deporte.nombre|capitalize }}</h5>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+            <button class="carousel-control-prev" type="button" data-bs-target="#imgHeader"
+                    data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#imgHeader"
+                    data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Next</span>
+            </button>
         </div>
     </header>
 
-    <div class="container my-2">
-        <h2>Provincias</h2>
+    {# CUADRO DE BÚSQUEDA #}
+    <div id="busqueda" class="container text-center my-5">
+        <h3 class="my-5">Buscar por región</h3>
+        <form>
+            <div class="d-flex my-3">
+                <input class="form-control me-2" type="search" placeholder="Búsqueda" aria-label="Search"
+                       autocomplete="off">
+                <button id="buscarRegion" class="btn btn-outline-success" type="submit">Buscar</button>
+            </div>
+            {% for deporte in deportes %}
+                <div class="form-check d-inline-block mx-3">
+                    <label class="form-check-label">
+                        <input class="form-check-input" type="radio" name="buscarDeporte" {{ loop.first ? 'checked' }}>
+                        {{ deporte.nombre|capitalize }}
+                    </label>
+                </div>
+            {% endfor %}
+        </form>
+    </div>
 
+    {# SPOTS POPULARES #}
+    <div id="popular" class="container my-5">
+        <h3 class="my-5 text-center">Spots populares</h3>
         <div class="row">
-        {% for provincia in provincias %}
-            <div class="col-3">- {{ provincia.nombre }}</div>
-        {% endfor %}
+            <div class="col-md-4 p-4 border">
+                <h5>Filtrar por</h5>
+                {% for deporte in deportes %}
+                    <div class="form-check my-2">
+                        <label class="form-check-label">
+                            <input class="form-check-input" type="radio" name="filtrarDeporte"
+                                   value="{{ deporte.nombre }}" id="{{ deporte.nombre }}" {{ loop.first ? 'checked' }}>
+                            {{ deporte.nombre|capitalize }}
+                        </label>
+                    </div>
+                {% endfor %}
+                <label for="orden">Ordenar por: </label>
+                <select id="orden" class="form-select">
+                    <option>Valoración</option>
+                    <option>Recientes</option>
+                </select>
+            </div>
+            <div class="col-md-8">
+                <ol id="bestSpots">
+                </ol>
+            </div>
         </div>
     </div>
+{% endblock %}
+
+{% block js %}
+    <script>
+        $(document).ready(function() {
+            filtrarSpots();
+        })
+
+        $('#buscarRegion').click(function () {
+            let region = $('#busqueda input[type="search"]').val();
+            if (region !== '') {
+                alert("Región: " + region);
+            }
+        })
+
+        $('input[name="filtrarDeporte"]').click(function () {
+            filtrarSpots()
+        });
+
+        function filtrarSpots() {
+            let bestSpots = $('#bestSpots');
+            let deporte = $('input[name="filtrarDeporte"]:checked').val();
+
+            $.ajax({
+                type: 'POST',
+                url: '{{ path('filtrar_spots') }}',
+                data: {'deporte': deporte}
+            }).done(function (spots) {
+                bestSpots.empty();
+                spots.forEach(function (spot) {
+                    let url = '{{ path('spot_view', {'deporte': 'deporte', 'id': 'id'}) }}';
+                    url = url.replace('deporte', spot.deporte).replace('id', spot.id);
+                    bestSpots.append(`
+                        <li class="my-2">
+                            <a href="${url}">
+                                <b>${spot.nombre}</b>
+                            </a>
+                            ------------>
+                            (${spot.notaMedia})
+                            <br>
+                            (${spot.provincia}) - por ${spot.user}
+                            </li>
+                    `);
+                })
+            });
+        }
+    </script>
 {% endblock %}

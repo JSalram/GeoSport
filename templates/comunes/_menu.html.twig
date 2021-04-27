@@ -1,4 +1,4 @@
-<nav class="navbar navbar-light bg-light">
+<nav class="navbar navbar-light bg-light sticky-top">
     <div class="container-fluid">
         <a class="navbar-brand" href="{{ path('index') }}">
             <img src="{{ asset('img/skateboard.png') }}"
@@ -8,6 +8,7 @@
                  class="align-text-bottom">
             <span class="h4">GeoSport</span>
         </a>
+
         <div>
             {% if app.user %}
                 <a href="#" class="btn btn-link">{{ app.user.username | capitalize }}</a>
