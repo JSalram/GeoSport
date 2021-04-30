@@ -1,24 +1,38 @@
+/* HEADER */
 header {
     background: black;
 }
-
 header .carousel-item {
     background-color: rgba(0, 0, 0, 0.5);
 }
-
 header img {
     max-height: 400px;
     object-fit: cover;
     object-position: center;
 
     transition: all .15s;
-    opacity: 0.75;
-}
-
-header img:hover {
     opacity: 1;
 }
-
+header img:hover {
+    opacity: 0.8;
+}
 header button:hover {
     background: rgba(0, 0, 0, 0.1);
+}
+
+/* POPULARES */
+#deporteSeleccionado {
+    text-transform: capitalize;
+}
+#loading i {
+    animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
 }

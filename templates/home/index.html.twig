@@ -46,9 +46,10 @@
         <h3 class="my-5">Buscar por región</h3>
         <form>
             <div class="d-flex my-3">
-                <input class="form-control me-2" type="search" placeholder="Búsqueda" aria-label="Search"
+                <input id="buscarRegion" class="form-control me-2" type="search" placeholder="Búsqueda"
+                       aria-label="Search"
                        autocomplete="off">
-                <button id="buscarRegion" class="btn btn-outline-success" type="submit">Buscar</button>
+                <button class="btn btn-outline-success" type="submit">Buscar</button>
             </div>
             {% for deporte in deportes %}
                 <div class="form-check d-inline-block mx-3">
@@ -63,7 +64,7 @@
 
     {# SPOTS POPULARES #}
     <div id="popular" class="container my-5">
-        <h3 class="my-5 text-center">Spots populares</h3>
+        <h3 class="my-5 text-center">Spots populares <span id="deporteSeleccionado"></span></h3>
         <div class="row">
             <div class="col-md-4 p-4 border">
                 <h5>Filtrar por</h5>
@@ -81,9 +82,11 @@
                     <option>Valoración</option>
                     <option>Recientes</option>
                 </select>
+                <button class="btn btn-primary my-4 w-100">Filtrar</button>
+                <div id="loading" class="text-center"><i class="fas fa-spinner"></i> Cargando...</div>
             </div>
             <div class="col-md-8">
-                <ol id="bestSpots">
+                <ol>
                 </ol>
             </div>
         </div>
@@ -92,34 +95,66 @@
 
 {% block js %}
     <script>
-        $(document).ready(function() {
+
+        // READY //
+        $(document).ready(function () {
             filtrarSpots();
+            autocomplete();
+
+            $('#popular button').click(function () {
+                filtrarSpots()
+            });
         })
 
-        $('#buscarRegion').click(function () {
-            let region = $('#busqueda input[type="search"]').val();
-            if (region !== '') {
-                alert("Región: " + region);
-            }
-        })
+        // FUNCIONES //
+        function autocomplete() {
+            var ciudades = JSON.parse('{{ provincias|json_encode|raw }}');
 
-        $('input[name="filtrarDeporte"]').click(function () {
-            filtrarSpots()
-        });
+            var accentMap = {
+                'á': 'a',
+                'é': 'e',
+                'í': 'i',
+                'ó': 'o',
+                'ú': 'u'
+            };
+            var normalize = function (term) {
+                var ret = '';
+                for (var i = 0; i < term.length; i++) {
+                    ret += accentMap[term.charAt(i)] || term.charAt(i);
+                }
+                return ret;
+            };
+
+            $('#buscarRegion').autocomplete({
+                source: function (request, response) {
+                    var matcher = new RegExp($.ui.autocomplete.escapeRegex(request.term), 'i');
+                    response($.grep(ciudades, function (value) {
+                        value = value.label || value.value || value;
+                        return matcher.test(value) || matcher.test(normalize(value));
+                    }));
+                }
+            });
+        }
 
         function filtrarSpots() {
-            let bestSpots = $('#bestSpots');
+            let bestSpots = $('#popular ol');
+            let loading = $('#loading');
             let deporte = $('input[name="filtrarDeporte"]:checked').val();
 
             $.ajax({
                 type: 'POST',
                 url: '{{ path('filtrar_spots') }}',
-                data: {'deporte': deporte}
+                data: {'deporte': deporte},
+                beforeSend: function () {
+                    loading.show();
+                }
             }).done(function (spots) {
+                $('#deporteSeleccionado').text('(' + deporte + ')');
                 bestSpots.empty();
+                loading.hide();
                 spots.forEach(function (spot) {
                     let url = '{{ path('spot_view', {'deporte': 'deporte', 'id': 'id'}) }}';
-                    url = url.replace('deporte', spot.deporte).replace('id', spot.id);
+                    url = url.replace('deporte', deporte).replace('id', spot.id);
                     bestSpots.append(`
                         <li class="my-2">
                             <a href="${url}">

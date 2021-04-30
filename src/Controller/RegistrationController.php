@@ -61,8 +61,8 @@ class RegistrationController extends AbstractController
                 (new TemplatedEmail())
                     ->from(new Address('javisr997@gmail.com', 'GeoSport Authenticator'))
                     ->to($user->getEmail())
-                    ->subject('Please Confirm your Email')
-                    ->htmlTemplate('registration3/confirmation_email.html.twig')
+                    ->subject('Por favor, confirme su email')
+                    ->htmlTemplate('registration/confirmation_email.html.twig')
             );
 
             return $guardHandler->authenticateUserAndHandleSuccess(

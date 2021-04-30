@@ -1,0 +1,14 @@
+<h1 style="background: darkslategrey; padding: 20px; color: white">
+    ¡Hola! Por favor, confirme su email
+</h1>
+
+<p>
+    Por favor confirme su correo electrónico haciendo click en el siguiente enlace: <br><br>
+    <a style="padding: 10px; background: lightblue; color: black; text-decoration: none; border-radius: 10px"
+       href="{{ signedUrl|raw }}">Confirmar mi correo</a>
+    Este enlace expirará en {{ expiresAtMessageKey|trans(expiresAtMessageData, 'VerifyEmailBundle') }}.
+</p>
+
+<p>
+    ¡Saludos!
+</p>
