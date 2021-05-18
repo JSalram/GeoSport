@@ -30,12 +30,18 @@ class Provincia
     private $spots;
 
     /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $coord;
+
+    /**
      * Provincia constructor.
      * @param $nombre
      */
-    public function __construct($nombre = null)
+    public function __construct($nombre = null, $coord = null)
     {
         $this->nombre = $nombre;
+        $this->coord = $coord;
         $this->spots = new ArrayCollection();
     }
 
@@ -82,6 +88,18 @@ class Provincia
                 $spot->setProvincia(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getCoord(): ?string
+    {
+        return $this->coord;
+    }
+
+    public function setCoord(?string $coord): self
+    {
+        $this->coord = $coord;
 
         return $this;
     }

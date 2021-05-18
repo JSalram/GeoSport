@@ -1,0 +1,50 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Revisión{% endblock %}
+
+{% block stylesheets %}
+    <style>
+        #mapid {
+            height: 350px;
+            z-index: 1;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <div class="container my-4">
+        <h2>Revisión ({{ spotsPendientes }})</h2>
+        <div class="card">
+            <div class="card-header">
+                <h4>{{ spot.nombre }} <span class="fs-6">{{ spot.provincia.nombre }}</span></h4>
+            </div>
+            <div class="card-body">
+                {% if spot.coord is not null %}
+                    <div id="mapid" class="my-2 border rounded "></div>
+                {% endif %}
+            </div>
+            <div class="card-footer">
+                <form method="post">
+                    <div class="input-group">
+                        <span class="input-group-text">Comentario</span>
+                        <input type="text" name="comentario" class="form-control">
+                    </div>
+                    <div class="row my-2 text-end">
+                        <div class="col-md-6">
+                            <input type="submit" class="btn btn-success w-100" name="aprobar" value="Aprobar">
+                        </div>
+                        <div class="col-md-6">
+                            <input type="submit" class="btn btn-danger w-100" name="rechazar" value="Rechazar">
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block js %}
+    {% if spot.coord is not null %}
+        {% include 'spot/ver.js.twig' %}
+    {% endif %}
+{% endblock %}

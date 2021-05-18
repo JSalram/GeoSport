@@ -1,0 +1,37 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Búsqueda{% endblock %}
+
+{% block body %}
+    <div class="container my-4">
+        <h1>{{ deporte.nombre|capitalize }} en {{ provincia.nombre }}</h1>
+
+        {% if spots|length > 0 %}
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nombre</th>
+                <th>Creado por</th>
+                <th>Fecha</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for spot in spots %}
+                <tr>
+                    <th>{{ spot.id }}</th>
+                    <td><a href="{{ path('spot_view', {'deporte': deporte.nombre, 'id': spot.id}) }}">{{ spot.nombre }}</a>
+                    </td>
+                    <td>{{ spot.user.username }}</td>
+                    <td>{{ spot.fecha|date('d/m/Y') }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p>No hay spots de {{ deporte.nombre}} registrados en {{ provincia.nombre }}.</p>
+        {% endif %}
+    </div>
+{% endblock %}
+
+

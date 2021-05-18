@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -59,6 +60,11 @@ class User implements UserInterface
     private $isVerified = false;
 
     /**
+     * @ORM\Column(type="datetime")
+     */
+    private $ultimoAcceso;
+
+    /**
      * User constructor.
      * @param null $email
      * @param null $username
@@ -69,6 +75,7 @@ class User implements UserInterface
         $this->email = $email;
         $this->username = $username;
         $this->password = $password;
+        $this->ultimoAcceso = new DateTime();
         $this->valoraciones = new ArrayCollection();
         $this->spots = new ArrayCollection();
     }
@@ -173,7 +180,7 @@ class User implements UserInterface
     {
         if (!$this->valoraciones->contains($valoracion)) {
             $this->valoraciones[] = $valoracion;
-            $valoracion->setUsuario($this);
+            $valoracion->setUser($this);
         }
 
         return $this;
@@ -183,8 +190,8 @@ class User implements UserInterface
     {
         if ($this->valoraciones->removeElement($valoracion)) {
             // set the owning side to null (unless already changed)
-            if ($valoracion->getUsuario() === $this) {
-                $valoracion->setUsuario(null);
+            if ($valoracion->getUser() === $this) {
+                $valoracion->setUser(null);
             }
         }
 
@@ -229,6 +236,18 @@ class User implements UserInterface
     public function setIsVerified(bool $isVerified): self
     {
         $this->isVerified = $isVerified;
+
+        return $this;
+    }
+
+    public function getUltimoAcceso(): ?\DateTimeInterface
+    {
+        return $this->ultimoAcceso;
+    }
+
+    public function setUltimoAcceso(?\DateTimeInterface $ultimoAcceso): self
+    {
+        $this->ultimoAcceso = $ultimoAcceso;
 
         return $this;
     }

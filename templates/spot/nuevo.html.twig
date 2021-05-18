@@ -1,0 +1,41 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Nuevo Spot{% endblock %}
+
+{% block stylesheets %}
+    <style>
+        #mapid {
+            height: 350px;
+            z-index: 1;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <div class="container my-4">
+        <h2>Nuevo spot de {{ deporte|capitalize }}</h2>
+
+        {{ form_start(form) }}
+        <div class="row">
+            <div class="col-lg-6">
+                {{ form_row(form.nombre) }}
+            </div>
+            <div class="col-lg-6">
+                {{ form_row(form.provincia) }}
+            </div>
+        </div>
+        {{ form_row(form.coord) }}
+
+        <div id="mapid" class="my-2 border rounded "></div>
+
+        <div class="float-end my-2">
+            {{ form_row(form.enviar) }}
+        </div>
+        {{ form_end(form) }}
+
+    </div>
+{% endblock %}
+
+{% block js %}
+    {% include 'spot/nuevo.js.twig' %}
+{% endblock %}

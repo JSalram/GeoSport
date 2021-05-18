@@ -1,10 +1,17 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}{{ deporte|capitalize }}{% endblock %}
+{% block title %}{{ deporte.nombre|capitalize }}{% endblock %}
 
 {% block body %}
-    <div class="container my-3">
-        <h2>{{ deporte|capitalize }}</h2>
+    <div class="container my-4">
+        <h2>
+            {{ deporte.nombre|capitalize }}
+            {% if app.user and app.user.verified %}
+                <a href="{{ path('spot_new', {'deporte': deporte.nombre}) }}" class="float-end btn btn-primary">
+                    Añadir nuevo spot
+                </a>
+            {% endif %}
+        </h2>
 
         <table class="table table-striped">
             <thead>
@@ -21,9 +28,9 @@
             {% for spot in spots %}
                 <tr>
                     <th>{{ spot.id }}</th>
-                    <td><a href="{{ path('spot_view', {'deporte': deporte, 'id': spot.id}) }}">{{ spot.nombre }}</a>
+                    <td><a href="{{ path('spot_view', {'deporte': deporte.nombre, 'id': spot.id}) }}">{{ spot.nombre }}</a>
                     </td>
-                    <td>{{ spot.deporte.nombre|capitalize }}</td>
+                    <td>{{ deporte.nombre|capitalize }}</td>
                     <td>{{ spot.provincia.nombre }}</td>
                     <td>{{ spot.user.username }}</td>
                     <td>{{ spot.fecha|date('d/m/Y') }}</td>

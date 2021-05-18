@@ -1,0 +1,96 @@
+// READY //
+$(document).ready(function () {
+    autocomplete();
+    filtrarSpots();
+
+    $('#popular button').click(function () {
+        filtrarSpots()
+    });
+})
+
+// FUNCIONES //
+function autocomplete() {
+    var provincias = JSON.parse('{{ provincias|json_encode|raw }}');
+
+    var accentMap = {
+        'á': 'a',
+        'é': 'e',
+        'í': 'i',
+        'ó': 'o',
+        'ú': 'u'
+    };
+    var normalize = function (term) {
+        var ret = '';
+        for (var i = 0; i < term.length; i++) {
+            ret += accentMap[term.charAt(i)] || term.charAt(i);
+        }
+        return ret;
+    };
+
+    $('#buscar').autocomplete({
+        source: function (request, response) {
+            var matcher = new RegExp($.ui.autocomplete.escapeRegex(request.term), 'i');
+            response($.grep(provincias, function (value) {
+                value = value.label || value.value || value;
+                return matcher.test(value) || matcher.test(normalize(value));
+            }));
+        }
+    });
+}
+
+function filtrarSpots() {
+    let bestSpots = $('#popular ol');
+    let loading = $('#loading');
+    let deporte = $('input[name="filtrarDeporte"]:checked').val();
+    let orden = $('#orden option:selected').val();
+    console.log(orden);
+
+    $.ajax({
+        type: 'POST',
+        url: '{{ path('filtrar_spots') }}',
+        data: {'deporte': deporte, 'orden': orden},
+        beforeSend: function () {
+            loading.show();
+        }
+    }).done(function (spots) {
+        $('#deporteSeleccionado').text('(' + deporte + ')');
+        bestSpots.empty();
+        loading.hide();
+        spots.forEach(function (spot) {
+            let url = '{{ path('spot_view', {'deporte': 'deporte', 'id': 'id'}) }}';
+            url = url.replace('deporte', deporte).replace('id', spot.id);
+            bestSpots.append(`
+                        <li class="my-2">
+                            <a href="${url}">
+                                <b>${spot.nombre}</b> (${spot.fecha})
+                            </a>
+                            ------------>
+                            ${showValoracion(spot.notaMedia)}
+                            (${spot.notaMedia})
+                            <br>
+                            (${spot.provincia}) - por ${spot.user}
+                            </li>
+                    `);
+        })
+    });
+}
+
+function showValoracion(nota) {
+    let valoracion = '';
+
+    for (let i = 0; i <= 10; i++) {
+        if (i <= nota) {
+            if (i > 0) {
+                if (i % 2 === 0) {
+                    valoracion += '<i class="fa fa-star"></i>';
+                } else if (i === nota) {
+                    valoracion += '<i class="fa fa-star-half-alt"></i>';
+                }
+            }
+        } else if (i % 2 !== 0) {
+            valoracion += '<i class="far fa-star"></i>';
+        }
+    }
+
+    return valoracion;
+}

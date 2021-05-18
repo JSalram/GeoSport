@@ -33,7 +33,7 @@ class Valoracion
      * @ORM\ManyToOne(targetEntity=User::class, inversedBy="valoraciones")
      * @ORM\JoinColumn(nullable=false)
      */
-    private $usuario;
+    private $user;
 
     /**
      * @ORM\ManyToOne(targetEntity=Spot::class, inversedBy="valoraciones")
@@ -50,14 +50,14 @@ class Valoracion
      * Valoracion constructor.
      * @param $nota
      * @param $comentario
-     * @param $usuario
+     * @param $user
      * @param $spot
      */
-    public function __construct($nota = null, $comentario = null, $usuario = null, $spot = null)
+    public function __construct($nota = null, $comentario = null, $user = null, $spot = null)
     {
         $this->nota = $nota;
         $this->comentario = $comentario;
-        $this->usuario = $usuario;
+        $this->user = $user;
         $this->spot = $spot;
         $this->fecha = new DateTime();
     }
@@ -91,14 +91,14 @@ class Valoracion
         return $this;
     }
 
-    public function getUsuario(): ?User
+    public function getUser(): ?User
     {
-        return $this->usuario;
+        return $this->user;
     }
 
-    public function setUsuario(?User $usuario): self
+    public function setUser(?User $user): self
     {
-        $this->usuario = $usuario;
+        $this->user = $user;
 
         return $this;
     }

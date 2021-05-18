@@ -1,0 +1,24 @@
+<div class="tab-pane fade" id="my-spots" role="tabpanel">
+    <div class="card-body pb-2">
+        {% if mySpots | length > 0 %}
+            <ul class="list-group">
+                {% for spot in mySpots %}
+                    <a class="list-group-item text-dark"
+                       href="{{ path('spot_view', {'deporte': spot.deporte.nombre, 'id': spot.id}) }}">
+                        {{ spot.nombre }} ➔
+                        {% if spot.aprobado is null %}
+                            <span class="text-warning">Pendiente</span>
+                        {% elseif spot.aprobado %}
+                            <span class="text-success">Aprobado</span>
+                        {% else %}
+                            <span class="text-danger">Rechazado</span>
+                        {% endif %}
+                    </a>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>Aún no has subido ningún spot</p>
+        {% endif %}
+    </div>
+</div>

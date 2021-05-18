@@ -1,0 +1,32 @@
+<div class="tab-pane fade active show" id="account-general" role="tabpanel">
+
+    <div class="card-body media align-items-center">
+        <img src="https://bootdey.com/img/Content/avatar/avatar1.png" alt="Profile Picture"
+             class="d-block ui-w-80 mb-2">
+        <div class="media-body ml-4">
+            <label class="btn btn-outline-primary">
+                Nueva foto
+                <input type="file" class="account-settings-fileinput">
+            </label> &nbsp;
+            <button type="button" class="btn btn-default md-btn-flat">Eliminar</button>
+
+            <div class="text-light small mt-1">
+                Formatos permitidos: JPG, GIF o PNG. Tamaño máximo de 800K
+            </div>
+        </div>
+    </div>
+    <hr class="border-light m-0">
+
+    <div class="card-body">
+        <div class="form-group">
+            <label class="form-label" for="username">Nombre de usuario</label>
+            <input id="username" type="text" class="form-control mb-1"
+                   value="{{ app.user.username }}">
+        </div>
+        <div class="form-group">
+            <label class="form-label" for="email">Correo electrónico</label>
+            <input id="email" type="email" class="form-control mb-1" value="{{ app.user.email }}">
+        </div>
+    </div>
+
+</div>

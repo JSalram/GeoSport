@@ -11,7 +11,14 @@
 
         <div>
             {% if app.user %}
-                <a href="#" class="btn btn-link">{{ app.user.username | capitalize }}</a>
+                {% if 'ROLE_ADMIN' in app.user.roles %}
+                    <a href="{{ path('revision') }}" class="btn btn-link text-success">Revisar Spots</a>
+                {% endif %}
+                {% if app.user.verified %}
+                    <a href="{{ path('user_settings') }}" class="btn btn-link">{{ app.user.username | capitalize }}</a>
+                {% else %}
+                    <a href="#" class="btn btn-link text-dark">{{ app.user.username | capitalize }}</a>
+                {% endif %}
                 <a href="{{ path('app_logout') }}" class="btn btn-danger">Cerrar sesión</a>
             {% else %}
                 <a href="{{ path('app_login') }}" class="btn btn-outline-primary">Iniciar sesión</a>

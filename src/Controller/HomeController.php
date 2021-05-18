@@ -2,37 +2,31 @@
 
 namespace App\Controller;
 
-use App\Entity\Deporte;
-use App\Entity\Provincia;
-use App\Entity\Spot;
-use App\Repository\DeporteRepository;
-use App\Repository\SpotRepository;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use App\Entity\User;
+use DateTime;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-class HomeController extends AbstractController
+class HomeController extends BaseController
 {
-    private $depRepo;
-    private $spotRepo;
-
-    public function __construct(DeporteRepository $depRepo, SpotRepository $spotRepo)
-    {
-        $this->depRepo = $depRepo;
-        $this->spotRepo = $spotRepo;
-    }
-
     /**
      * @Route("/", name="index")
      * @return Response
      */
     public function index(): Response
     {
-        $provRepo = $this->getDoctrine()->getRepository(Provincia::class);
+        // SERVICIO TEMPORAL (LISTENER/SUBSCRIBER)
+        if ($this->getUser()) {
+            /** @var User $user */
+            $user = $this->getUser();
+            $user->setUltimoAcceso(new DateTime());
+            $this->em->flush();
+        }
+
         $provincias = [];
-        foreach ($provRepo->findAll() as $p) {
+        foreach ($this->provRepo->findAll() as $p) {
             $provincias[] = $p->getNombre();
         }
 
@@ -40,6 +34,69 @@ class HomeController extends AbstractController
             'deportes' => $this->depRepo->findAll(),
             'spots' => $this->spotRepo->findAll(),
             'provincias' => $provincias,
+        ]);
+    }
+
+    /**
+     * @Route("/busqueda", name="busqueda", methods={"GET"})
+     * @param Request $request
+     * @return Response
+     */
+    public function busqueda(Request $request)
+    {
+        $provincia = $this->provRepo->findOneBy(['nombre' => $request->get('provincia')]);
+        $deporte = $this->depRepo->findOneBy(['nombre' => $request->get('deporte')]);
+
+        if (!$provincia) {
+            $this->addFlash('warning', 'La provincia no coincide. Inténtelo de nuevo');
+            return $this->redirectToRoute('index');
+        }
+
+        $spots = $this->spotRepo->findBy([
+            'deporte' => $deporte,
+            'provincia' => $provincia,
+            'aprobado' => true
+        ]);
+
+        return $this->render('home/busqueda.html.twig', [
+            'deporte' => $deporte,
+            'provincia' => $provincia,
+            'spots' => $spots,
+        ]);
+    }
+
+// @Route("/revision/{id}", name="revisar_spot")
+
+    /**
+     * @Route("/revision", name="revision")
+     * @return Response
+     */
+    public function revision(Request $request)
+    {
+        $spotsPendientes = $this->spotRepo->findBy(['aprobado' => null]);
+        if (!$spotsPendientes) {
+            dump($spotsPendientes);
+            $this->addFlash('info', 'No hay spots en revisión en estos momentos. Inténtelo de nuevo más tarde.');
+            return $this->redirectToRoute('index');
+        }
+
+        $spot = $spotsPendientes[0];
+        if ($request->get('aprobar') || $request->get('rechazar')) {
+            $opcion = $request->get('aprobar') !== null;
+            $spot->setAprobado($opcion);
+
+            $revision = $request->get('comentario');
+            if ($request->get('rechazar') && $revision !== '') {
+                $spot->setRevision($revision);
+            }
+
+            $this->em->flush();
+            return $this->redirectToRoute('revision');
+        }
+
+        return $this->render('home/revision.html.twig', [
+            'spot' => $spot,
+            'spotsPendientes' => count($spotsPendientes)
         ]);
     }
 
@@ -52,13 +109,15 @@ class HomeController extends AbstractController
     {
         if ($request->isXmlHttpRequest()) {
             $deporte = $this->depRepo->findOneBy(['nombre' => $request->get('deporte')]);
-            $bestSpots = $this->spotRepo->findBestSpots(5, $deporte);
+            $orden = $request->get('orden');
+            $bestSpots = $this->spotRepo->findSpotsBy(5, $deporte, $orden);
 
             $spots = [];
             foreach ($bestSpots as $bs) {
                 $spots[] = [
                     'id' => $bs->getId(),
                     'nombre' => $bs->getNombre(),
+                    'fecha' => date_format($bs->getFecha(), 'd/m/y'),
                     'notaMedia' => $bs->getNotaMedia(),
                     'provincia' => $bs->getProvincia()->getNombre(),
                     'deporte' => $bs->getDeporte()->getNombre(),

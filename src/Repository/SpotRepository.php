@@ -21,20 +21,22 @@ class SpotRepository extends ServiceEntityRepository
     }
 
     /**
-     * @param $cant
+     * @param int $cant
      * @param Deporte|null $deporte
+     * @param string $orderBy
      * @return Spot[] Returns an array of Spot objects
      */
-    public function findBestSpots($cant, Deporte $deporte = null): array
+    public function findSpotsBy(int $cant, Deporte $deporte = null, string $orderBy = 'notaMedia'): array
     {
         if ($deporte === null) {
             $depRepo = $this->getEntityManager()->getRepository(Deporte::class);
-            $deporte = $depRepo->findOneBy(['nombre'=>'skate']);
+            $deporte = $depRepo->findOneBy(['nombre' => 'skate']);
         }
 
         return $this->createQueryBuilder('s')
-            ->orderBy('s.notaMedia', 'DESC')
             ->andWhere('s.deporte = :deporte')
+            ->andWhere('s.aprobado = true')
+            ->orderBy('s.' . $orderBy, 'DESC')
             ->setMaxResults($cant)
             ->setParameter('deporte', $deporte)
             ->getQuery()

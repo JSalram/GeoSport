@@ -3,7 +3,11 @@
 {% block title %}Inicio{% endblock %}
 
 {% block stylesheets %}
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
     <link rel="stylesheet" href="{{ asset('css/index.css') }}">
+{% endblock %}
+{% block javascripts %}
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 {% endblock %}
 
 {% block body %}
@@ -41,20 +45,22 @@
         </div>
     </header>
 
+    {% include 'comunes/_avisos.html.twig' %}
+
     {# CUADRO DE BÚSQUEDA #}
     <div id="busqueda" class="container text-center my-5">
-        <h3 class="my-5">Buscar por región</h3>
-        <form>
+        <h3 class="my-5">Buscar por provincia</h3>
+        <form action="{{ path('busqueda') }}">
             <div class="d-flex my-3">
-                <input id="buscarRegion" class="form-control me-2" type="search" placeholder="Búsqueda"
-                       aria-label="Search"
-                       autocomplete="off">
+                <input id="buscar" name="provincia" class="form-control me-2" type="search"
+                       placeholder="Búsqueda..." aria-label="Search" autocomplete="off">
                 <button class="btn btn-outline-success" type="submit">Buscar</button>
             </div>
             {% for deporte in deportes %}
                 <div class="form-check d-inline-block mx-3">
                     <label class="form-check-label">
-                        <input class="form-check-input" type="radio" name="buscarDeporte" {{ loop.first ? 'checked' }}>
+                        <input class="form-check-input" type="radio" name="deporte"
+                               value="{{ deporte.nombre }}" {{ loop.first ? 'checked' }}>
                         {{ deporte.nombre|capitalize }}
                     </label>
                 </div>
@@ -79,8 +85,8 @@
                 {% endfor %}
                 <label for="orden">Ordenar por: </label>
                 <select id="orden" class="form-select">
-                    <option>Valoración</option>
-                    <option>Recientes</option>
+                    <option value="notaMedia">Valoración</option>
+                    <option value="fecha">Recientes</option>
                 </select>
                 <button class="btn btn-primary my-4 w-100">Filtrar</button>
                 <div id="loading" class="text-center"><i class="fas fa-spinner"></i> Cargando...</div>
@@ -94,80 +100,5 @@
 {% endblock %}
 
 {% block js %}
-    <script>
-
-        // READY //
-        $(document).ready(function () {
-            filtrarSpots();
-            autocomplete();
-
-            $('#popular button').click(function () {
-                filtrarSpots()
-            });
-        })
-
-        // FUNCIONES //
-        function autocomplete() {
-            var ciudades = JSON.parse('{{ provincias|json_encode|raw }}');
-
-            var accentMap = {
-                'á': 'a',
-                'é': 'e',
-                'í': 'i',
-                'ó': 'o',
-                'ú': 'u'
-            };
-            var normalize = function (term) {
-                var ret = '';
-                for (var i = 0; i < term.length; i++) {
-                    ret += accentMap[term.charAt(i)] || term.charAt(i);
-                }
-                return ret;
-            };
-
-            $('#buscarRegion').autocomplete({
-                source: function (request, response) {
-                    var matcher = new RegExp($.ui.autocomplete.escapeRegex(request.term), 'i');
-                    response($.grep(ciudades, function (value) {
-                        value = value.label || value.value || value;
-                        return matcher.test(value) || matcher.test(normalize(value));
-                    }));
-                }
-            });
-        }
-
-        function filtrarSpots() {
-            let bestSpots = $('#popular ol');
-            let loading = $('#loading');
-            let deporte = $('input[name="filtrarDeporte"]:checked').val();
-
-            $.ajax({
-                type: 'POST',
-                url: '{{ path('filtrar_spots') }}',
-                data: {'deporte': deporte},
-                beforeSend: function () {
-                    loading.show();
-                }
-            }).done(function (spots) {
-                $('#deporteSeleccionado').text('(' + deporte + ')');
-                bestSpots.empty();
-                loading.hide();
-                spots.forEach(function (spot) {
-                    let url = '{{ path('spot_view', {'deporte': 'deporte', 'id': 'id'}) }}';
-                    url = url.replace('deporte', deporte).replace('id', spot.id);
-                    bestSpots.append(`
-                        <li class="my-2">
-                            <a href="${url}">
-                                <b>${spot.nombre}</b>
-                            </a>
-                            ------------>
-                            (${spot.notaMedia})
-                            <br>
-                            (${spot.provincia}) - por ${spot.user}
-                            </li>
-                    `);
-                })
-            });
-        }
-    </script>
+    {% include 'home/index.js.twig' %}
 {% endblock %}

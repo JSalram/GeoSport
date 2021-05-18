@@ -1,0 +1,35 @@
+<style>
+    footer {
+        clear: both;
+    }
+</style>
+
+<footer class="container-fluid border-top border-dark py-4 px-5">
+    <div class="row">
+        <div class="col-md-4">
+            <h5>Descarga nuestra app</h5>
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item">
+                    <a href="#">Google Play</a>
+                </li>
+                <li class="list-group-item">
+                    <a href="#">App Store</a>
+                </li>
+            </ul>
+        </div>
+        <div class="col-md-4">
+            <h5>Explora spots</h5>
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item">
+                    <a href="{{ path('spots', {'deporte': 'skate'}) }}">Skate</a>
+                </li>
+                <li class="list-group-item">
+                    <a href="{{ path('spots', {'deporte': 'surf'}) }}">Surf</a>
+                </li>
+            </ul>
+        </div>
+        <div class="col-md-4 text-center">
+            <img class="w-25 img-fluid" src="{{ asset('img/skateboard.png') }}" alt="logo">
+        </div>
+    </div>
+</footer>

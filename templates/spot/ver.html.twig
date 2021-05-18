@@ -1,0 +1,90 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Spot{% endblock %}
+
+{% block stylesheets %}
+    <style>
+        #mapid {
+            height: 350px;
+            z-index: 1;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <div class="container my-4">
+        <h3>{{ spot.nombre }}</h3>
+        {% if spot.coord is not null %}
+            <div id="mapid" class="my-2 border rounded "></div>
+        {% endif %}
+
+        {% if spot.valoraciones.count > 0 %}
+            <hr>
+            <h4 class="text-center">Comentarios</h4>
+            <ul class="list-group list-group-flush">
+                {% for valoracion in spot.valoraciones %}
+                    <li class="list-group-item">
+                        <b>{{ valoracion.user.username }}:</b>
+                        {{ valoracion.comentario }} -
+                        {{ valoracion.fecha|date("d/m/y H:i") }}
+                        ------------->
+                        {{ valoracion.nota|nota|raw }}
+                        ({{ valoracion.nota }})
+                        {% if valoracion.user == app.user %}
+                            <form class="d-inline-block"
+                                  action="{{ path('valoracion_eliminar', {'id': valoracion.id}) }}" method="post">
+                                <input type="hidden" name="spotId" value="{{ spot.id }}">
+                                <input type="hidden" name="deporte" value="{{ deporte }}">
+                                <button type="submit" class="btn">
+                                    <i class="fas fa-times text-danger"></i>
+                                </button>
+                            </form>
+                            </a>
+                        {% endif %}
+                    </li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+
+        {% if spot.aprobado is null %}
+            <div class="alert alert-info">Spot pendiente de revisión.</div>
+        {% elseif spot.aprobado %}
+            {% if app.user and app.user.verified %}
+                <hr>
+                <form action="{{ path('comentar_spot', {'id': spot.id}) }}" method="post">
+                    <input type="hidden" name="deporte" value="{{ deporte }}">
+                    <div class="row">
+                        <div class="col-md-10">
+                            <label for="comentario" class="form-label">Comentar</label>
+                            <textarea class="form-control" id="comentario" name="comentario" rows="3"
+                                      maxlength="255"></textarea>
+                        </div>
+                        <div class="col-md-2">
+                            <label for="nota" class="form-label">Nota</label>
+                            <input type="number" id="nota" name="nota" class="form-control" value="0" min="0" max="10">
+                        </div>
+                    </div>
+                    <input type="submit" class="btn btn-primary my-3" value="Enviar">
+                </form>
+            {% endif %}
+        {% else %}
+            <div class="alert alert-danger">
+                Lo sentimos, su spot ha sido rechazado.
+                {% if spot.revision %}
+                    <br><b>Motivo:</b> {{ spot.revision }}
+                {% endif %}
+            </div>
+        {% endif %}
+
+        {% if spot.user == app.user %}
+            <a class="btn btn-link text-danger" href="{{ path('spot_remove', {'deporte': deporte, 'id': spot.id}) }}">Eliminar</a>
+        {% endif %}
+        <a href="{{ path('spots', {'deporte': deporte}) }}" class="btn btn-link">Volver al listado</a>
+    </div>
+{% endblock %}
+
+{% block js %}
+    {% if spot.coord is not null %}
+        {% include 'spot/ver.js.twig' %}
+    {% endif %}
+{% endblock %}

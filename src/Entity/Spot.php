@@ -65,6 +65,16 @@ class Spot
     private $deporte;
 
     /**
+     * @ORM\Column(type="boolean", nullable=true)
+     */
+    private $aprobado;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $revision;
+
+    /**
      * Spot constructor.
      * @param null $nombre
      * @param null $deporte
@@ -153,8 +163,7 @@ class Spot
             $this->valoraciones[] = $valoracion;
             $valoracion->setSpot($this);
 
-            $media = $this->calcularNotaMedia();
-            $this->setNotaMedia($media);
+            $this->updateNotaMedia();
         }
 
         return $this;
@@ -167,6 +176,7 @@ class Spot
             if ($valoracion->getSpot() === $this) {
                 $valoracion->setSpot(null);
             }
+            $this->updateNotaMedia();
         }
 
         return $this;
@@ -189,9 +199,9 @@ class Spot
         return $this->notaMedia;
     }
 
-    public function setNotaMedia(?float $notaMedia): self
+    public function updateNotaMedia(): self
     {
-        $this->notaMedia = $notaMedia;
+        $this->notaMedia = $this->calcularNotaMedia();
 
         return $this;
     }
@@ -203,10 +213,12 @@ class Spot
     {
         // Media de las notas
         $media = 0;
-        foreach ($this->valoraciones as $valoracion) {
-            $media += $valoracion->getNota();
+        if (count($this->valoraciones) > 0) {
+            foreach ($this->valoraciones as $valoracion) {
+                $media += $valoracion->getNota();
+            }
+            $media /= count($this->valoraciones);
         }
-        $media /= count($this->valoraciones);
         return $media;
     }
 
@@ -218,6 +230,30 @@ class Spot
     public function setDeporte(?Deporte $deporte): self
     {
         $this->deporte = $deporte;
+
+        return $this;
+    }
+
+    public function getAprobado(): ?bool
+    {
+        return $this->aprobado;
+    }
+
+    public function setAprobado(?bool $aprobado): self
+    {
+        $this->aprobado = $aprobado;
+
+        return $this;
+    }
+
+    public function getRevision(): ?string
+    {
+        return $this->revision;
+    }
+
+    public function setRevision(?string $revision): self
+    {
+        $this->revision = $revision;
 
         return $this;
     }
