@@ -1,3 +1,5 @@
+{% from 'comunes/_paginacion.html.twig' import paginar %}
+
 <div class="tab-pane fade" id="my-spots" role="tabpanel">
     <div class="card-body pb-2">
         {% if mySpots | length > 0 %}
@@ -16,6 +18,8 @@
                     </a>
                     </li>
                 {% endfor %}
+                    {% set url = path('user_settings') %}
+                {{ paginar(url, pagina, maxPaginas) }}
             </ul>
         {% else %}
             <p>Aún no has subido ningún spot</p>

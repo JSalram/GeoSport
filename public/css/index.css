@@ -6,7 +6,7 @@ header .carousel-item {
     background-color: rgba(0, 0, 0, 0.5);
 }
 header img {
-    max-height: 400px;
+    height: 60vh;
     object-fit: cover;
     object-position: center;
 

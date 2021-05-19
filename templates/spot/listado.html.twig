@@ -1,4 +1,5 @@
 {% extends 'base.html.twig' %}
+{% from 'comunes/_paginacion.html.twig' import paginar %}
 
 {% block title %}{{ deporte.nombre|capitalize }}{% endblock %}
 
@@ -28,7 +29,8 @@
             {% for spot in spots %}
                 <tr>
                     <th>{{ spot.id }}</th>
-                    <td><a href="{{ path('spot_view', {'deporte': deporte.nombre, 'id': spot.id}) }}">{{ spot.nombre }}</a>
+                    <td>
+                        <a href="{{ path('spot_view', {'deporte': deporte.nombre, 'id': spot.id}) }}">{{ spot.nombre }}</a>
                     </td>
                     <td>{{ deporte.nombre|capitalize }}</td>
                     <td>{{ spot.provincia.nombre }}</td>
@@ -38,5 +40,8 @@
             {% endfor %}
             </tbody>
         </table>
+
+        {% set url = path('spots', {'deporte': deporte.nombre}) %}
+        {{ paginar(url, pagina, maxPaginas) }}
     </div>
 {% endblock %}

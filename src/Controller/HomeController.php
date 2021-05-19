@@ -107,10 +107,13 @@ class HomeController extends BaseController
      */
     public function filtrarSpots(Request $request): JsonResponse
     {
+        $spotsPagina = 5;
+        $pagina = intval($request->get('p', 1));
+
         if ($request->isXmlHttpRequest()) {
             $deporte = $this->depRepo->findOneBy(['nombre' => $request->get('deporte')]);
             $orden = $request->get('orden');
-            $bestSpots = $this->spotRepo->findSpotsBy(5, $deporte, $orden);
+            $bestSpots = $this->spotRepo->findSpotsBy($pagina, $spotsPagina, $deporte, $orden);
 
             $spots = [];
             foreach ($bestSpots as $bs) {

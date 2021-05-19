@@ -16,18 +16,25 @@ use Symfony\Component\Routing\Annotation\Route;
 class SpotController extends BaseController
 {
     /**
-     * @Route("/", name="spots")
+     * @Route("", name="spots")
+     * @param Request $request
      * @param string $deporte
      * @return Response
      */
-    public function listado(string $deporte): Response
+    public function listado(Request $request, string $deporte): Response
     {
+        $spotsPagina = 10;
+        $pagina = intval($request->get('p', 1));
+
         $deporte = $this->depRepo->findOneBy(['nombre' => $deporte]);
-        $spots = $this->spotRepo->findBy(['deporte' => $deporte, 'aprobado' => true]);
+        $spots = $this->spotRepo->findSpotsBy($pagina, $spotsPagina, $deporte, 'fecha');
+        $maxPaginas = ceil(count($spots) / $spotsPagina);
 
         return $this->render('spot/listado.html.twig', [
             'spots' => $spots,
             'deporte' => $deporte,
+            'pagina' => $pagina,
+            'maxPaginas' => $maxPaginas
         ]);
     }
 
@@ -49,7 +56,7 @@ class SpotController extends BaseController
         }
 
         $d = $this->depRepo->findOneBy(['nombre' => $deporte]);
-        
+
         $spot = new Spot();
         $spot->setDeporte($d);
         $spot->setUser($this->getUser());

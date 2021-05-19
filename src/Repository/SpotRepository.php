@@ -4,8 +4,11 @@ namespace App\Repository;
 
 use App\Entity\Deporte;
 use App\Entity\Spot;
+use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\Tools\Pagination\Paginator;
 use Doctrine\Persistence\ManagerRegistry;
+use phpDocumentor\Reflection\Types\This;
 
 /**
  * @method Spot|null find($id, $lockMode = null, $lockVersion = null)
@@ -20,38 +23,48 @@ class SpotRepository extends ServiceEntityRepository
         parent::__construct($registry, Spot::class);
     }
 
+    public function paginacion($query, int $pagina, int $spotsPagina): Paginator
+    {
+        $paginador = new Paginator($query);
+        $paginador->getQuery()
+            ->setFirstResult($spotsPagina * ($pagina - 1))
+            ->setMaxResults($spotsPagina);
+        return $paginador;
+    }
+
     /**
-     * @param int $cant
+     * @param int $pagina
+     * @param int $spotsPagina
      * @param Deporte|null $deporte
      * @param string $orderBy
-     * @return Spot[] Returns an array of Spot objects
+     * @return Paginator Returns an array of Spot objects
      */
-    public function findSpotsBy(int $cant, Deporte $deporte = null, string $orderBy = 'notaMedia'): array
+    public function findSpotsBy(int $pagina = 1, int $spotsPagina = 5,
+                                Deporte $deporte = null, string $orderBy = 'notaMedia'): Paginator
     {
         if ($deporte === null) {
             $depRepo = $this->getEntityManager()->getRepository(Deporte::class);
             $deporte = $depRepo->findOneBy(['nombre' => 'skate']);
         }
 
-        return $this->createQueryBuilder('s')
+        $query = $this->createQueryBuilder('s')
             ->andWhere('s.deporte = :deporte')
             ->andWhere('s.aprobado = true')
             ->orderBy('s.' . $orderBy, 'DESC')
-            ->setMaxResults($cant)
             ->setParameter('deporte', $deporte)
-            ->getQuery()
-            ->getResult();
+            ->getQuery();
+
+        return $this->paginacion($query, $pagina, $spotsPagina);
     }
 
-    /*
-    public function findOneBySomeField($value): ?Spot
+    public function findByUser(User $user, int $pagina, int $spotsPagina)
     {
-        return $this->createQueryBuilder('s')
-            ->andWhere('s.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
+        $query = $this->createQueryBuilder('s')
+            ->andWhere('s.user = :user')
+            ->orderBy('s.fecha', 'DESC')
+            ->setParameter('user', $user)
+            ->getQuery();
+
+        return $this->paginacion($query, $pagina, $spotsPagina);
     }
-    */
 }

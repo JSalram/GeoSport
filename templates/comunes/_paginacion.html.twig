@@ -1,0 +1,22 @@
+{% macro paginar(ruta, pagina, maxPaginas) %}
+    {% if maxPaginas > 1 %}
+        <nav class="text-center my-2">
+            <ul class="pagination justify-content-center">
+                <li class="page-item {% if pagina <= 1 %}disabled{% endif %}">
+                    <a class="page-link"
+                       href="{{ ruta }}?p={{ pagina - 1 }}">Anterior</a>
+                </li>
+                {% for i in range(1, maxPaginas) %}
+                    <li class="page-item {% if i == pagina %}active{% endif %}">
+                        <a class="page-link"
+                           href="{{ ruta }}?p={{ i }}">{{ i }}</a>
+                    </li>
+                {% endfor %}
+                <li class="page-item {% if pagina >= maxPaginas %}disabled{% endif %}">
+                    <a class="page-link"
+                       href="{{ ruta }}?p={{ pagina + 1 }}">Siguiente</a>
+                </li>
+            </ul>
+        </nav>
+    {% endif %}
+{% endmacro %}
