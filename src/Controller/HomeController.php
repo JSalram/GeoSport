@@ -45,27 +45,16 @@ class HomeController extends BaseController
     public function busqueda(Request $request)
     {
         $provincia = $this->provRepo->findOneBy(['nombre' => $request->get('provincia')]);
-        $deporte = $this->depRepo->findOneBy(['nombre' => $request->get('deporte')]);
-
         if (!$provincia) {
             $this->addFlash('warning', 'La provincia no coincide. Inténtelo de nuevo');
             return $this->redirectToRoute('index');
         }
 
-        $spots = $this->spotRepo->findBy([
-            'deporte' => $deporte,
-            'provincia' => $provincia,
-            'aprobado' => true
-        ]);
-
-        return $this->render('home/busqueda.html.twig', [
-            'deporte' => $deporte,
-            'provincia' => $provincia,
-            'spots' => $spots,
+        return $this->redirectToRoute('spots_prov', [
+            'deporte' => $request->get('deporte'),
+            'provincia' => $provincia->getNombre(),
         ]);
     }
-
-// @Route("/revision/{id}", name="revisar_spot")
 
     /**
      * @Route("/revision", name="revision")

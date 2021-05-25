@@ -11,28 +11,40 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
- * @Route("/spots/{deporte}")
+ * @Route("/spots")
  */
 class SpotController extends BaseController
 {
     /**
-     * @Route("", name="spots")
+     * @Route("/listado/{deporte}", name="spots")
+     * @Route("/listado/{deporte}/{provincia}", name="spots_prov")
      * @param Request $request
      * @param string $deporte
+     * @param string|null $provincia
      * @return Response
      */
-    public function listado(Request $request, string $deporte): Response
+    public function listado(Request $request, string $deporte, string $provincia = null): Response
     {
         $spotsPagina = 10;
         $pagina = intval($request->get('p', 1));
 
         $deporte = $this->depRepo->findOneBy(['nombre' => $deporte]);
-        $spots = $this->spotRepo->findSpotsBy($pagina, $spotsPagina, $deporte, 'fecha');
+        if ($provincia) {
+            $provincia = $this->provRepo->findOneBy(['nombre' => $request->get('provincia')]);
+            $spots = $this->spotRepo->findBy([
+                'deporte' => $deporte,
+                'provincia' => $provincia,
+                'aprobado' => true
+            ]);
+        } else {
+            $spots = $this->spotRepo->findSpotsBy($pagina, $spotsPagina, $deporte, 'fecha');
+        }
         $maxPaginas = ceil(count($spots) / $spotsPagina);
 
         return $this->render('spot/listado.html.twig', [
             'spots' => $spots,
             'deporte' => $deporte,
+            'provincia' => $provincia,
             'pagina' => $pagina,
             'maxPaginas' => $maxPaginas
         ]);
@@ -40,25 +52,34 @@ class SpotController extends BaseController
 
     /**
      * @Route("/nuevo", name="spot_new")
+     * @Route("/nuevo/{deporte}", name="dep_spot_new")
+     * @Route("/nuevo/{deporte}/{provincia}", name="dep_prov_spot_new")
      * @param Request $request
      * @param string $deporte
+     * @param string|null $provincia
      * @return Response
      */
-    public function nuevoSpot(Request $request, string $deporte): Response
+    public function nuevoSpot(Request $request, string $deporte = null, string $provincia = null): Response
     {
-        if ($request->isXmlHttpRequest()) {
-            $provRepo = $this->getDoctrine()->getRepository(Provincia::class);
-            $provincia = $provRepo->find($request->get('provincia'));
+        if (!$this->getUser()) {
+            return $this->redirectToRoute('index');
+        }
 
-            if ($provincia) {
-                return $this->json(['coord' => $provincia->getCoord()]);
+        if ($request->isXmlHttpRequest()) {
+            $prov = $this->provRepo->find($request->get('prov'));
+
+            if ($prov) {
+                return $this->json(['coord' => $prov->getCoord()]);
             }
         }
 
-        $d = $this->depRepo->findOneBy(['nombre' => $deporte]);
-
         $spot = new Spot();
-        $spot->setDeporte($d);
+        if ($deporte) {
+            $spot->setDeporte($this->depRepo->findOneBy(['nombre' => $deporte]));
+        }
+        if ($provincia) {
+            $spot->setProvincia($this->provRepo->findOneBy(['nombre' => $provincia]));
+        }
         $spot->setUser($this->getUser());
         $form = $this->createForm(SpotType::class, $spot);
 
@@ -69,28 +90,28 @@ class SpotController extends BaseController
             $em = $this->em;
             $em->persist($spot);
             $em->flush();
-            return $this->redirectToRoute('spot_view', ['deporte' => $deporte, 'id' => $spot->getId()]);
+            return $this->redirectToRoute('spot_view', ['id' => $spot->getId()]);
         }
 
         return $this->render('spot/nuevo.html.twig', [
             'deporte' => $deporte,
+            'provincia' => $provincia,
             'form' => $form->createView(),
         ]);
     }
 
     /**
-     * @Route("/{id}", name="spot_view")
-     * @param string $deporte
+     * @Route("/ver/{id}", name="spot_view")
      * @param int $id
      * @return Response
      */
-    public function verSpot(string $deporte, int $id): Response
+    public function verSpot(int $id): Response
     {
         $spot = $this->spotRepo->find($id);
 
         return $this->render('spot/ver.html.twig', [
             'spot' => $spot,
-            'deporte' => $deporte,
+            'deporte' => $spot->getDeporte()->getNombre(),
         ]);
     }
 
@@ -103,6 +124,10 @@ class SpotController extends BaseController
     public function eliminarSpot(string $deporte, int $id): RedirectResponse
     {
         $spot = $this->spotRepo->find($id);
+
+        if (!$this->getUser()) {
+            return $this->redirectToRoute('index');
+        }
 
         if ($spot->getUser() !== $this->getUser()) {
             $this->addFlash('danger', 'No puedes eliminar un spot que no es tuyo');

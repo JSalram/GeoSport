@@ -17,12 +17,12 @@
             <div class="row no-gutters row-bordered row-border-light">
                 <div class="col-md-3 pt-0">
                     <div class="list-group list-group-flush account-settings-links" id="list-tab" role="tablist">
-                        <a class="list-group-item list-group-item-action active" data-bs-toggle="list"
-                           href="#account-general" role="tab">General</a>
+                        <a class="list-group-item list-group-item-action {% if not paneSpots %}active{% endif %}"
+                           data-bs-toggle="list" href="#account-general" role="tab">General</a>
                         <a class="list-group-item list-group-item-action" data-bs-toggle="list"
                            href="#account-change-password" role="tab">Cambiar contraseña</a>
-                        <a class="list-group-item list-group-item-action" data-bs-toggle="list"
-                           href="#my-spots" role="tab">Mis spots</a>
+                        <a class="list-group-item list-group-item-action {% if paneSpots %}active{% endif %}"
+                           data-bs-toggle="list" href="#my-spots" role="tab">Mis spots</a>
                     </div>
                 </div>
                 <div class="col-md-9">

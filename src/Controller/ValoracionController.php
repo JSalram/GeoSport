@@ -18,6 +18,10 @@ class ValoracionController extends BaseController
      */
     public function eliminarComentario(Request $request, int $id): RedirectResponse
     {
+        if (!$this->getUser()) {
+            return $this->redirectToRoute('index');
+        }
+
         $spot = $this->spotRepo->find($request->get('spotId'));
         $valoracion = $this->valoracionRepo->find($id);
 
@@ -29,10 +33,7 @@ class ValoracionController extends BaseController
         $spot->removeValoracion($valoracion);
         $em->flush();
 
-        return $this->redirectToRoute('spot_view', [
-            'deporte' => $request->get('deporte'),
-            'id' => $request->get('spotId'),
-        ]);
+        return $this->redirectToRoute('spot_view', ['id' => $request->get('spotId')]);
     }
 
     /**
@@ -43,6 +44,10 @@ class ValoracionController extends BaseController
      */
     public function comentar(Request $request, int $id): RedirectResponse
     {
+        if (!$this->getUser()) {
+            return $this->redirectToRoute('index');
+        }
+
         $spot = $this->spotRepo->find($id);
         $nota = $request->get('nota') ?: 0;
         $comentario = $request->get('comentario') ?: null;
@@ -54,9 +59,6 @@ class ValoracionController extends BaseController
         $em->persist($valoracion);
         $em->flush();
 
-        return $this->redirectToRoute('spot_view', [
-            'deporte' => $request->get('deporte'),
-            'id' => $id,
-        ]);
+        return $this->redirectToRoute('spot_view', ['id' => $id]);
     }
 }

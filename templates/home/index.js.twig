@@ -57,7 +57,7 @@ function filtrarSpots() {
         bestSpots.empty();
         loading.hide();
         spots.forEach(function (spot) {
-            let url = '{{ path('spot_view', {'deporte': 'deporte', 'id': 'id'}) }}';
+            let url = '{{ path('spot_view', {'id': 'id'}) }}';
             url = url.replace('deporte', deporte).replace('id', spot.id);
             bestSpots.append(`
                         <li class="my-2">

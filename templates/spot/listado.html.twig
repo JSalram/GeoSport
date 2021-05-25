@@ -1,47 +1,74 @@
 {% extends 'base.html.twig' %}
 {% from 'comunes/_paginacion.html.twig' import paginar %}
 
-{% block title %}{{ deporte.nombre|capitalize }}{% endblock %}
+{% block title %}
+    {% if provincia %}
+        {{ provincia.nombre }}
+    {% else %}
+        {{ deporte.nombre|capitalize }}
+    {% endif %}
+{% endblock %}
 
 {% block body %}
     <div class="container my-4">
         <h2>
-            {{ deporte.nombre|capitalize }}
-            {% if app.user and app.user.verified %}
-                <a href="{{ path('spot_new', {'deporte': deporte.nombre}) }}" class="float-end btn btn-primary">
-                    Añadir nuevo spot
-                </a>
+            {% if provincia %}
+                {{ deporte.nombre|capitalize }} en {{ provincia.nombre }}
+                {% if app.user and app.user.verified %}
+                    <a href="{{ path('dep_prov_spot_new', {'deporte': deporte.nombre, 'provincia': provincia.nombre}) }}"
+                       class="float-end btn btn-primary">
+                        Añadir nuevo spot
+                    </a>
+                {% endif %}
+            {% else %}
+                {{ deporte.nombre|capitalize }}
+                {% if app.user and app.user.verified %}
+                    <a href="{{ path('dep_spot_new', {'deporte': deporte.nombre}) }}" class="float-end btn btn-primary">
+                        Añadir nuevo spot
+                    </a>
+                {% endif %}
             {% endif %}
         </h2>
 
-        <table class="table table-striped">
-            <thead>
-            <tr>
-                <th>ID</th>
-                <th>Nombre</th>
-                <th>Deporte</th>
-                <th>Provincia</th>
-                <th>Creado por</th>
-                <th>Fecha</th>
-            </tr>
-            </thead>
-            <tbody>
-            {% for spot in spots %}
+        {% if spots|length > 0 %}
+            <table class="table table-striped">
+                <thead>
                 <tr>
-                    <th>{{ spot.id }}</th>
-                    <td>
-                        <a href="{{ path('spot_view', {'deporte': deporte.nombre, 'id': spot.id}) }}">{{ spot.nombre }}</a>
-                    </td>
-                    <td>{{ deporte.nombre|capitalize }}</td>
-                    <td>{{ spot.provincia.nombre }}</td>
-                    <td>{{ spot.user.username }}</td>
-                    <td>{{ spot.fecha|date('d/m/Y') }}</td>
+                    <th>ID</th>
+                    <th>Nombre</th>
+                    <th>Deporte</th>
+                    <th>Provincia</th>
+                    <th>Creado por</th>
+                    <th>Fecha</th>
                 </tr>
-            {% endfor %}
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                {% for spot in spots %}
+                    <tr>
+                        <th>{{ spot.id }}</th>
+                        <td>
+                            <a href="{{ path('spot_view', {'id': spot.id}) }}">{{ spot.nombre }}</a>
+                        </td>
+                        <td>{{ deporte.nombre|capitalize }}</td>
+                        <td>{{ spot.provincia.nombre }}</td>
+                        <td>{{ spot.user.username }}</td>
+                        <td>{{ spot.fecha|date('d/m/Y') }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
 
-        {% set url = path('spots', {'deporte': deporte.nombre}) %}
-        {{ paginar(url, pagina, maxPaginas) }}
+            {% if provincia %}
+                {% set url = path('spots_prov', {'deporte': deporte.nombre, 'provincia': provincia.nombre}) %}
+            {% else %}
+                {% set url = path('spots', {'deporte': deporte.nombre}) %}
+            {% endif %}
+            {{ paginar(url, pagina, maxPaginas) }}
+        {% else %}
+            <p>No hay spots de {{ deporte.nombre }} registrados
+                {% if provincia is not null %}
+                en {{ provincia.nombre }}
+                {% endif %}.</p>
+        {% endif %}
     </div>
 {% endblock %}

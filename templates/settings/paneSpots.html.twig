@@ -1,12 +1,12 @@
 {% from 'comunes/_paginacion.html.twig' import paginar %}
 
-<div class="tab-pane fade" id="my-spots" role="tabpanel">
+<div class="tab-pane fade {% if paneSpots %}active show{% endif %}" id="my-spots" role="tabpanel">
     <div class="card-body pb-2">
         {% if mySpots | length > 0 %}
             <ul class="list-group">
                 {% for spot in mySpots %}
                     <a class="list-group-item text-dark"
-                       href="{{ path('spot_view', {'deporte': spot.deporte.nombre, 'id': spot.id}) }}">
+                       href="{{ path('spot_view', {'id': spot.id}) }}">
                         {{ spot.nombre }} ➔
                         {% if spot.aprobado is null %}
                             <span class="text-warning">Pendiente</span>
@@ -18,8 +18,8 @@
                     </a>
                     </li>
                 {% endfor %}
-                    {% set url = path('user_settings') %}
-                {{ paginar(url, pagina, maxPaginas) }}
+                {% set url = path('user_settings', {'s': true}) %}
+                {{ paginar(url, pagina, maxPaginas, true) }}
             </ul>
         {% else %}
             <p>Aún no has subido ningún spot</p>

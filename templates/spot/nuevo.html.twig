@@ -4,6 +4,10 @@
 
 {% block stylesheets %}
     <style>
+        *[readonly="readonly"] {
+            pointer-events: none;
+        }
+
         #mapid {
             height: 350px;
             z-index: 1;
@@ -13,15 +17,28 @@
 
 {% block body %}
     <div class="container my-4">
-        <h2>Nuevo spot de {{ deporte|capitalize }}</h2>
+        <h2>Nuevo spot
+            {% if deporte %}
+                de {{ deporte|capitalize }}
+            {% endif %}
+        </h2>
 
         {{ form_start(form) }}
+        {{ form_row(form.nombre) }}
         <div class="row">
             <div class="col-lg-6">
-                {{ form_row(form.nombre) }}
+                {% if deporte %}
+                    {{ form_row(form.deporte, {'attr': {'readonly': true}}) }}
+                {% else %}
+                    {{ form_row(form.deporte) }}
+                {% endif %}
             </div>
             <div class="col-lg-6">
-                {{ form_row(form.provincia) }}
+                {% if provincia %}
+                    {{ form_row(form.provincia, {'attr': {'readonly': true}}) }}
+                {% else %}
+                    {{ form_row(form.provincia) }}
+                {% endif %}
             </div>
         </div>
         {{ form_row(form.coord) }}

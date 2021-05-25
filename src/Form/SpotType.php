@@ -2,6 +2,7 @@
 
 namespace App\Form;
 
+use App\Entity\Deporte;
 use App\Entity\Provincia;
 use App\Entity\Spot;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
@@ -19,6 +20,10 @@ class SpotType extends AbstractType
         $builder
             ->add('nombre')
             ->add('coord', HiddenType::class)
+            ->add('deporte', EntityType::class, [
+                'class' => Deporte::class,
+                'choice_label' => 'nombre'
+            ])
             ->add('provincia', EntityType::class, [
                 'class' => Provincia::class,
                 'choice_label' => 'nombre'

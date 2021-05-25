@@ -49,24 +49,42 @@
 
     {# CUADRO DE BÚSQUEDA #}
     <div id="busqueda" class="container text-center my-5">
-        <h3 class="my-5">Buscar por provincia</h3>
-        <form action="{{ path('busqueda') }}">
-            <div class="d-flex my-3">
-                <input id="buscar" name="provincia" class="form-control me-2" type="search"
-                       placeholder="Búsqueda..." aria-label="Search" autocomplete="off">
-                <button class="btn btn-outline-success" type="submit">Buscar</button>
+        <div class="row">
+        {% if app.user and app.user.verified %}
+            <div class="col-lg-8">
+        {% endif %}
+
+                <h4 class="my-4">Busca spots en tu provincia</h4>
+                <form action="{{ path('busqueda') }}">
+                    <div class="d-flex my-3">
+                        <input id="buscar" name="provincia" class="form-control me-2" type="search"
+                               placeholder="Búsqueda..." aria-label="Search" autocomplete="off">
+                        <button class="btn btn-success" type="submit">Buscar</button>
+                    </div>
+                    {% for deporte in deportes %}
+                        <div class="form-check d-inline-block mx-3">
+                            <label class="form-check-label">
+                                <input class="form-check-input" type="radio" name="deporte"
+                                       value="{{ deporte.nombre }}" {{ loop.first ? 'checked' }}>
+                                {{ deporte.nombre|capitalize }}
+                            </label>
+                        </div>
+                    {% endfor %}
+                </form>
+
+        {% if app.user and app.user.verified %}
             </div>
-            {% for deporte in deportes %}
-                <div class="form-check d-inline-block mx-3">
-                    <label class="form-check-label">
-                        <input class="form-check-input" type="radio" name="deporte"
-                               value="{{ deporte.nombre }}" {{ loop.first ? 'checked' }}>
-                        {{ deporte.nombre|capitalize }}
-                    </label>
-                </div>
-            {% endfor %}
-        </form>
+
+            <div id="nuevoSpot" class="col-lg-4">
+                <h4 class="my-4">O añade uno tú mismo</h4>
+                <a href="{{ path('spot_new') }}" class="btn btn-outline-success">
+                    <i class="fas fa-upload"></i> Nuevo Spot
+                </a>
+            </div>
+        </div>
+        {% endif %}
     </div>
+
 
     {# SPOTS POPULARES #}
     <div id="popular" class="container my-5">
@@ -78,7 +96,8 @@
                     <div class="form-check my-2">
                         <label class="form-check-label">
                             <input class="form-check-input" type="radio" name="filtrarDeporte"
-                                   value="{{ deporte.nombre }}" id="{{ deporte.nombre }}" {{ loop.first ? 'checked' }}>
+                                   value="{{ deporte.nombre }}"
+                                   id="{{ deporte.nombre }}" {{ loop.first ? 'checked' }}>
                             {{ deporte.nombre|capitalize }}
                         </label>
                     </div>
@@ -99,6 +118,6 @@
     </div>
 {% endblock %}
 
-{% block js %}
-    {% include 'home/index.js.twig' %}
-{% endblock %}
+                {% block js %}
+                    {% include 'home/index.js.twig' %}
+                {% endblock %}

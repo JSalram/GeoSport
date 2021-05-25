@@ -38,9 +38,10 @@ $(document).ready(function () {
 });
 
 function getProvinciaCoord() {
+    console.log($('#spot_provincia option:selected').val());
     $.ajax({
         type: 'POST',
-        data: {'provincia': $('#spot_provincia option:selected').val()}
+        data: {'prov': $('#spot_provincia option:selected').val()}
     }).done(function (prov) {
         if (prov.coord !== null) {
             coord = prov.coord;
@@ -49,6 +50,7 @@ function getProvinciaCoord() {
             coord = '40.421860362045194, -3.7023925781250004';
             zoom = 6;
         }
+        console.log(prov);
         lat = parseFloat(coord.split(',')[0]);
         lng = parseFloat(coord.split(',')[1]);
 

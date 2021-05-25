@@ -30,7 +30,7 @@
                         ------------->
                         {{ valoracion.nota|nota|raw }}
                         ({{ valoracion.nota }})
-                        {% if valoracion.user == app.user %}
+                        {% if valoracion.user == app.user or app.user.admin %}
                             <form class="d-inline-block"
                                   action="{{ path('valoracion_eliminar', {'id': valoracion.id}) }}" method="post">
                                 <input type="hidden" name="spotId" value="{{ spot.id }}">
@@ -76,9 +76,11 @@
             </div>
         {% endif %}
 
-        {% if spot.user == app.user %}
-            <a class="btn btn-link text-danger" href="{{ path('spot_remove', {'deporte': deporte, 'id': spot.id}) }}">Eliminar</a>
+        {% if spot.user == app.user or app.user.admin %}
+            <a class="btn btn-link text-danger"
+               href="{{ path('spot_remove', {'deporte': deporte, 'id': spot.id}) }}">Eliminar</a>
         {% endif %}
+        {# VOLVER A SPOTS O SPOTS_PROV #}
         <a href="{{ path('spots', {'deporte': deporte}) }}" class="btn btn-link">Volver al listado</a>
     </div>
 {% endblock %}

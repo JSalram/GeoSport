@@ -19,6 +19,7 @@ class SettingsController extends BaseController
     {
         $spotsPagina = 10;
         $pagina = intval($request->get('p', 1));
+        $paneSpots = $request->get('s', false);
 
         if (!$this->getUser()) {
             return $this->redirectToRoute('index');
@@ -29,7 +30,8 @@ class SettingsController extends BaseController
         return $this->render('settings/user.html.twig', [
             'mySpots' => $mySpots,
             'pagina' => $pagina,
-            'maxPaginas' => $maxPaginas
+            'maxPaginas' => $maxPaginas,
+            'paneSpots' => $paneSpots,
         ]);
     }
 }
