@@ -3,47 +3,73 @@
 {% block title %}Spot{% endblock %}
 
 {% block stylesheets %}
-    <style>
-        #mapid {
-            height: 350px;
-            z-index: 1;
-        }
-    </style>
+    <link rel="stylesheet" href="{{ asset('css/spot/ver.css') }}">
 {% endblock %}
 
 {% block body %}
     <div class="container my-4">
-        <h3>{{ spot.nombre }}</h3>
-        {% if spot.coord is not null %}
-            <div id="mapid" class="my-2 border rounded "></div>
-        {% endif %}
+        <div class="row">
+            <p class="mb-4">
+                <a class="text-decoration-none" href="javascript:history.back()">
+                    <i class="fas fa-arrow-left"></i>
+                    Volver
+                </a>
+            </p>
+            <h3>{{ spot.nombre }}</h3>
+            <div id="rutas">
+                <a href="{{ path('spots', {'deporte': spot.deporte.nombre}) }}">{{ spot.deporte.nombre | capitalize }}</a>
+                ➝
+                <a href="{{ path('spots_prov', {'deporte': spot.deporte.nombre, 'provincia': spot.provincia.nombre}) }}">
+                    {{ spot.provincia.nombre }}</a>
+            </div>
+            <div class="col-lg-8 my-2">
+                {% if spot.coord is not null %}
+                    <div id="mapid" class="border rounded"></div>
+                {% endif %}
+            </div>
+
+            <div class="col-lg-4 rounded bg-secondary">
+                <div class="text-light my-4">
+                    <h6>Autor:</h6>
+                    <h5 class="d-flex align-items-center">
+                        <img src="https://bootdey.com/img/Content/avatar/avatar1.png" alt="Profile Picture"
+                             class="rounded-circle me-2" id="userNavbar" width="40" height="40">
+                        <span>{{ spot.user.username }}</span>
+                    </h5>
+                    <h6>Fecha:</h6>
+                    <p>{{ spot.fecha | date('d/m/Y') }}</p>
+                    <h6>Valoración:</h6>
+                    <p><span class="text-warning">{{ spot.notaMedia | nota | raw }}</span>
+                        ({{ spot.valoraciones.count }})</p>
+                    <a href="#comentar" class="btn btn-success my-1 w-100">Deja un comentario</a>
+                    {% if spot.user == app.user or app.user.admin %}
+                        <div class="my-1 d-flex">
+                            <a class="btn btn-warning w-100 mx-1" href="{{ path('spot_edit', {'id': spot.id}) }}">Editar</a>
+                            <button type="button" class="btn btn-danger w-100 mx-1" data-bs-toggle="modal"
+                                    data-bs-target="#modalEliminarSpot">Eliminar
+                            </button>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
 
         {% if spot.valoraciones.count > 0 %}
             <hr>
             <h4 class="text-center">Comentarios</h4>
-            <ul class="list-group list-group-flush">
-                {% for valoracion in spot.valoraciones %}
-                    <li class="list-group-item">
-                        <b>{{ valoracion.user.username }}:</b>
-                        {{ valoracion.comentario }} -
-                        {{ valoracion.fecha|date("d/m/y H:i") }}
-                        ------------->
-                        {{ valoracion.nota|nota|raw }}
-                        ({{ valoracion.nota }})
-                        {% if valoracion.user == app.user or app.user.admin %}
-                            <form class="d-inline-block"
-                                  action="{{ path('valoracion_eliminar', {'id': valoracion.id}) }}" method="post">
-                                <input type="hidden" name="spotId" value="{{ spot.id }}">
-                                <input type="hidden" name="deporte" value="{{ deporte }}">
-                                <button type="submit" class="btn">
-                                    <i class="fas fa-times text-danger"></i>
-                                </button>
-                            </form>
-                            </a>
-                        {% endif %}
-                    </li>
-                {% endfor %}
-            </ul>
+            {% for valoracion in spot.valoraciones %}
+                <div class="mt-3 {{ loop.last ? '' : 'border-bottom' }}">
+                    <b>{{ valoracion.user.username }}</b>
+                    <span class="text-secondary">{{ valoracion.fecha|date("d/m/y H:i") }}</span>
+                    {% if valoracion.user == app.user or app.user.admin %}
+                        <a class="ms-2" href="{{ path('valoracion_eliminar', {'id': valoracion.id}) }}">
+                            <i class="fas fa-times text-danger"></i>
+                        </a>
+                    {% endif %}
+                    <p class="text-warning">{{ valoracion.nota | nota | raw }}</p>
+                    <p>{{ valoracion.comentario }}</p>
+                </div>
+            {% endfor %}
         {% endif %}
 
         {% if spot.aprobado is null %}
@@ -51,7 +77,7 @@
         {% elseif spot.aprobado %}
             {% if app.user and app.user.verified %}
                 <hr>
-                <form action="{{ path('comentar_spot', {'id': spot.id}) }}" method="post">
+                <form id="comentar" action="{{ path('comentar_spot', {'id': spot.id}) }}" method="post">
                     <input type="hidden" name="deporte" value="{{ deporte }}">
                     <div class="row">
                         <div class="col-md-10">
@@ -69,19 +95,31 @@
             {% endif %}
         {% else %}
             <div class="alert alert-danger">
-                Lo sentimos, su spot ha sido rechazado.
+                <p>Lo sentimos, su spot ha sido rechazado.</p>
                 {% if spot.revision %}
-                    <br><b>Motivo:</b> {{ spot.revision }}
+                    <p><b>Motivo:</b> {{ spot.revision }}</p>
                 {% endif %}
             </div>
         {% endif %}
+    </div>
 
-        {% if spot.user == app.user or app.user.admin %}
-            <a class="btn btn-link text-danger"
-               href="{{ path('spot_remove', {'deporte': deporte, 'id': spot.id}) }}">Eliminar</a>
-        {% endif %}
-        {# VOLVER A SPOTS O SPOTS_PROV #}
-        <a href="{{ path('spots', {'deporte': deporte}) }}" class="btn btn-link">Volver al listado</a>
+    <div class="modal" id="modalEliminarSpot" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Eliminar Spot</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>¿Está seguro de que desea eliminar el spot? Esta acción es irreversible.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <a class="btn btn-danger" href="{{ path('spot_remove', {'id': spot.id}) }}">
+                        Eliminar</a>
+                </div>
+            </div>
+        </div>
     </div>
 {% endblock %}
 

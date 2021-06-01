@@ -17,6 +17,7 @@ class ValoracionExtension extends AbstractExtension
 
     public function printNota($nota): string
     {
+        $nota = intval($nota);
         $valoracion = '';
 
         for ($i = 0; $i <= 10; $i++) {

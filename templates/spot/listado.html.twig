@@ -14,49 +14,73 @@
         <h2>
             {% if provincia %}
                 {{ deporte.nombre|capitalize }} en {{ provincia.nombre }}
-                {% if app.user and app.user.verified %}
-                    <a href="{{ path('dep_prov_spot_new', {'deporte': deporte.nombre, 'provincia': provincia.nombre}) }}"
-                       class="float-end btn btn-primary">
-                        Añadir nuevo spot
-                    </a>
-                {% endif %}
             {% else %}
                 {{ deporte.nombre|capitalize }}
-                {% if app.user and app.user.verified %}
-                    <a href="{{ path('dep_spot_new', {'deporte': deporte.nombre}) }}" class="float-end btn btn-primary">
-                        Añadir nuevo spot
-                    </a>
-                {% endif %}
             {% endif %}
         </h2>
 
         {% if spots|length > 0 %}
-            <table class="table table-striped">
-                <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Nombre</th>
-                    <th>Deporte</th>
-                    <th>Provincia</th>
-                    <th>Creado por</th>
-                    <th>Fecha</th>
-                </tr>
-                </thead>
-                <tbody>
-                {% for spot in spots %}
-                    <tr>
-                        <th>{{ spot.id }}</th>
-                        <td>
-                            <a href="{{ path('spot_view', {'id': spot.id}) }}">{{ spot.nombre }}</a>
-                        </td>
-                        <td>{{ deporte.nombre|capitalize }}</td>
-                        <td>{{ spot.provincia.nombre }}</td>
-                        <td>{{ spot.user.username }}</td>
-                        <td>{{ spot.fecha|date('d/m/Y') }}</td>
-                    </tr>
-                {% endfor %}
-                </tbody>
-            </table>
+            <hr class="bg-dark">
+
+            <div class="row">
+                <div class="col-lg-2 border">
+                    <h6 class="mt-2">Opciones:</h6>
+                    {% if app.user and app.user.verified %}
+                        {% if provincia is defined and provincia %}
+                            <a href="{{ path('dep_prov_spot_new', {'deporte': deporte.nombre, 'provincia': provincia.nombre}) }}"
+                        {% else %}
+                            <a href="{{ path('dep_spot_new', {'deporte': deporte.nombre}) }}"
+                        {% endif %}
+                        class="btn btn-primary my-2 w-100">
+                            Añadir nuevo spot
+                        </a>
+                    {% endif %}
+                    <a href="#" class="btn btn-outline-primary my-2 w-100">Ver mapa</a>
+
+                    <h6 class="mt-2">Ver spots:</h6>
+                    <div class="my-2 list-group">
+                        <a class="list-group-item"
+                            {% if provincia is defined and provincia %}
+                                href="{{ path('spots_prov', {'deporte': deporte.nombre, 'provincia': provincia.nombre ,'order': 'fecha'}) }}">
+                            {% else %}
+                                href="{{ path('spots', {'deporte': deporte.nombre, 'order': 'fecha'}) }}">
+                            {% endif %}
+                            Recientes</a>
+                        <a class="list-group-item"
+                            {% if provincia is defined and provincia %}
+                                href="{{ path('spots_prov', {'deporte': deporte.nombre, 'provincia': provincia.nombre ,'order': 'notaMedia'}) }}">
+                            {% else %}
+                                href="{{ path('spots', {'deporte': deporte.nombre, 'order': 'notaMedia'}) }}">
+                            {% endif %}
+                            Mejor valorados</a>
+                    </div>
+                </div>
+                <div class="col-lg-10 py-3">
+                    <div class="row">
+                        {% for spot in spots %}
+                            <div class="col-lg-8 py-2">
+                                <h5>
+                                    <a class="text-decoration-none" href="{{ path('spot_view', {'id': spot.id}) }}">
+                                        {{ spot.nombre }}
+                                    </a>
+                                </h5>
+                                <small>Publicado el {{ spot.fecha | date('d/m/Y') }}</small>
+                                <p>En {{ spot.provincia.nombre }} - por {{ spot.user.username }}</p>
+                            </div>
+                            <div class="col-lg-4 text-end">
+                                <h5>
+                                    <span class="text-warning">{{ spot.notaMedia | nota | raw }}</span>
+                                    {{ spot.notaMedia }}
+                                    ({{ spot.valoraciones.count }})
+                                </h5>
+                            </div>
+                            {% if not loop.last %}
+                                <hr class="bg-secondary">
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
 
             {% if provincia %}
                 {% set url = path('spots_prov', {'deporte': deporte.nombre, 'provincia': provincia.nombre}) %}
@@ -66,7 +90,7 @@
             {{ paginar(url, pagina, maxPaginas) }}
         {% else %}
             <p>No hay spots de {{ deporte.nombre }} registrados
-                {% if provincia is not null %}
+                {% if provincia %}
                 en {{ provincia.nombre }}
                 {% endif %}.</p>
         {% endif %}

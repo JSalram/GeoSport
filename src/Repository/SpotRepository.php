@@ -40,7 +40,7 @@ class SpotRepository extends ServiceEntityRepository
      * @return Paginator Returns an array of Spot objects
      */
     public function findSpotsBy(int $pagina = 1, int $spotsPagina = 5,
-                                Deporte $deporte = null, string $orderBy = 'notaMedia'): Paginator
+                    Deporte $deporte = null, string $orderBy = 'notaMedia', $provincia = null): Paginator
     {
         if ($deporte === null) {
             $depRepo = $this->getEntityManager()->getRepository(Deporte::class);
@@ -49,8 +49,12 @@ class SpotRepository extends ServiceEntityRepository
 
         $query = $this->createQueryBuilder('s')
             ->andWhere('s.deporte = :deporte')
-            ->andWhere('s.aprobado = true')
-            ->orderBy('s.' . $orderBy, 'DESC')
+            ->andWhere('s.aprobado = true');
+            if ($provincia) {
+                $query->andWhere('s.provincia = :provincia')
+                ->setParameter('provincia', $provincia);
+            }
+            $query->orderBy('s.' . $orderBy, 'DESC')
             ->setParameter('deporte', $deporte)
             ->getQuery();
 

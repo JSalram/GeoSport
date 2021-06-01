@@ -11,33 +11,37 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
+/**
+ * @Route("/valoracion")
+ */
 class ValoracionController extends BaseController
 {
     /**
-     * @Route("/valoracion/{id}/eliminar", name="valoracion_eliminar")
+     * @Route("/eliminar/{id}", name="valoracion_eliminar")
      */
-    public function eliminarComentario(Request $request, int $id): RedirectResponse
+    public function eliminarComentario(int $id): RedirectResponse
     {
         if (!$this->getUser()) {
             return $this->redirectToRoute('index');
         }
 
-        $spot = $this->spotRepo->find($request->get('spotId'));
         $valoracion = $this->valoracionRepo->find($id);
+        $spot = $valoracion->getSpot();
 
         if ($valoracion->getUser() !== $this->getUser()) {
             $this->addFlash('danger', 'No puedes eliminar una valoración que no es tuya.');
             return $this->redirectToRoute('index');
         }
-        $em = $this->em;
-        $spot->removeValoracion($valoracion);
-        $em->flush();
 
-        return $this->redirectToRoute('spot_view', ['id' => $request->get('spotId')]);
+        $spot->removeValoracion($valoracion);
+        $this->em->remove($valoracion);
+        $this->em->flush();
+
+        return $this->redirectToRoute('spot_view', ['id' => $spot->getId()]);
     }
 
     /**
-     * @Route("/comentar/{id}", name="comentar_spot", methods={"POST"})
+     * @Route("/comentar/spot/{id}", name="comentar_spot", methods={"POST"})
      * @param Request $request
      * @param int $id
      * @return RedirectResponse
@@ -54,10 +58,9 @@ class ValoracionController extends BaseController
 
         $valoracion = new Valoracion($nota, $comentario, $this->getUser(), $spot);
 
-        $em = $this->em;
         $spot->addValoracion($valoracion);
-        $em->persist($valoracion);
-        $em->flush();
+        $this->em->persist($valoracion);
+        $this->em->flush();
 
         return $this->redirectToRoute('spot_view', ['id' => $id]);
     }

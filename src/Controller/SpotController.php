@@ -2,7 +2,6 @@
 
 namespace App\Controller;
 
-use App\Entity\Provincia;
 use App\Entity\Spot;
 use App\Form\SpotType;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -25,19 +24,16 @@ class SpotController extends BaseController
      */
     public function listado(Request $request, string $deporte, string $provincia = null): Response
     {
-        $spotsPagina = 10;
+        $spotsPagina = 8;
+        $order = $request->get('order', 'fecha');
         $pagina = intval($request->get('p', 1));
 
         $deporte = $this->depRepo->findOneBy(['nombre' => $deporte]);
         if ($provincia) {
             $provincia = $this->provRepo->findOneBy(['nombre' => $request->get('provincia')]);
-            $spots = $this->spotRepo->findBy([
-                'deporte' => $deporte,
-                'provincia' => $provincia,
-                'aprobado' => true
-            ]);
+            $spots = $this->spotRepo->findSpotsBy($pagina, $spotsPagina, $deporte, $order, $provincia);
         } else {
-            $spots = $this->spotRepo->findSpotsBy($pagina, $spotsPagina, $deporte, 'fecha');
+            $spots = $this->spotRepo->findSpotsBy($pagina, $spotsPagina, $deporte, $order);
         }
         $maxPaginas = ceil(count($spots) / $spotsPagina);
 
@@ -55,7 +51,7 @@ class SpotController extends BaseController
      * @Route("/nuevo/{deporte}", name="dep_spot_new")
      * @Route("/nuevo/{deporte}/{provincia}", name="dep_prov_spot_new")
      * @param Request $request
-     * @param string $deporte
+     * @param string|null $deporte
      * @param string|null $provincia
      * @return Response
      */
@@ -87,9 +83,8 @@ class SpotController extends BaseController
         if ($form->isSubmitted() && $form->isValid()) {
             $spot = $form->getData();
 
-            $em = $this->em;
-            $em->persist($spot);
-            $em->flush();
+            $this->em->persist($spot);
+            $this->em->flush();
             return $this->redirectToRoute('spot_view', ['id' => $spot->getId()]);
         }
 
@@ -97,6 +92,43 @@ class SpotController extends BaseController
             'deporte' => $deporte,
             'provincia' => $provincia,
             'form' => $form->createView(),
+        ]);
+    }
+
+    /**
+     * @Route("/edit/{id}", name="spot_edit")
+     * @param Request $request
+     * @param int $id
+     * @return Response
+     */
+    public function editarSpot(Request $request, int $id): Response
+    {
+        if (!$this->getUser()) {
+            return $this->redirectToRoute('index');
+        }
+
+        if ($request->isXmlHttpRequest()) {
+            $prov = $this->provRepo->find($request->get('prov'));
+
+            if ($prov) {
+                return $this->json(['coord' => $prov->getCoord()]);
+            }
+        }
+
+        $spot = $this->spotRepo->find($id);
+        $form = $this->createForm(SpotType::class, $spot);
+
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $spot->setAprobado(null);
+            $this->em->flush();
+            return $this->redirectToRoute('spot_view', ['id' => $spot->getId()]);
+        }
+
+        return $this->render('spot/nuevo.html.twig', [
+            'spot' => $spot,
+            'form' => $form->createView(),
+            'editar' => true,
         ]);
     }
 
@@ -121,7 +153,7 @@ class SpotController extends BaseController
      * @param int $id
      * @return RedirectResponse
      */
-    public function eliminarSpot(string $deporte, int $id): RedirectResponse
+    public function eliminarSpot(int $id): RedirectResponse
     {
         $spot = $this->spotRepo->find($id);
 
@@ -134,9 +166,8 @@ class SpotController extends BaseController
             return $this->redirectToRoute('index');
         }
 
-        $em = $this->em;
-        $em->remove($spot);
-        $em->flush();
+        $this->em->remove($spot);
+        $this->em->flush();
 
         $this->addFlash('success', 'Spot eliminado con éxito.');
         return $this->redirectToRoute('index');

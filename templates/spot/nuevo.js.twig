@@ -1,7 +1,15 @@
+{% if editar is defined and editar %}
+var coord = '{{ spot.coord }}';
+{% else %}
 var coord = '40.421860362045194, -3.7023925781250004';
+{% endif %}
 var lat = parseFloat(coord.split(',')[0]);
 var lng = parseFloat(coord.split(',')[1]);
+{% if editar is defined and editar %}
+var zoom = 14;
+{% else %}
 var zoom = 6;
+{% endif %}
 
 //// MAPA ////
 var mapa = L.map("mapid").setView([lat, lng], zoom);
@@ -34,11 +42,12 @@ $(document).ready(function () {
     $('#spot_provincia').change(function () {
         getProvinciaCoord();
     })
+    {% if editar is not defined %}
     getProvinciaCoord();
+    {% endif %}
 });
 
 function getProvinciaCoord() {
-    console.log($('#spot_provincia option:selected').val());
     $.ajax({
         type: 'POST',
         data: {'prov': $('#spot_provincia option:selected').val()}
@@ -50,7 +59,6 @@ function getProvinciaCoord() {
             coord = '40.421860362045194, -3.7023925781250004';
             zoom = 6;
         }
-        console.log(prov);
         lat = parseFloat(coord.split(',')[0]);
         lng = parseFloat(coord.split(',')[1]);
 

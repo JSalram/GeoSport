@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Spot;
 use App\Entity\User;
 use DateTime;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -105,12 +106,14 @@ class HomeController extends BaseController
             $bestSpots = $this->spotRepo->findSpotsBy($pagina, $spotsPagina, $deporte, $orden);
 
             $spots = [];
+            /** @var Spot $bs */
             foreach ($bestSpots as $bs) {
                 $spots[] = [
                     'id' => $bs->getId(),
                     'nombre' => $bs->getNombre(),
                     'fecha' => date_format($bs->getFecha(), 'd/m/y'),
                     'notaMedia' => $bs->getNotaMedia(),
+                    'numValoraciones' => count($bs->getValoraciones()),
                     'provincia' => $bs->getProvincia()->getNombre(),
                     'deporte' => $bs->getDeporte()->getNombre(),
                     'user' => $bs->getUser()->getUsername(),

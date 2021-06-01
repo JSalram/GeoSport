@@ -17,38 +17,42 @@
 
 {% block body %}
     <div class="container my-4">
-        <h2>Nuevo spot
-            {% if deporte %}
-                de {{ deporte|capitalize }}
-            {% endif %}
+        {% if editar is defined and editar %}
+            <h2>Editar spot
+        {% else %}
+            <h2>Nuevo spot
+        {% endif %}
+        {% if deporte is defined and deporte %}
+            de {{ deporte|capitalize }}
+        {% endif %}
         </h2>
 
-        {{ form_start(form) }}
-        {{ form_row(form.nombre) }}
-        <div class="row">
-            <div class="col-lg-6">
-                {% if deporte %}
-                    {{ form_row(form.deporte, {'attr': {'readonly': true}}) }}
-                {% else %}
-                    {{ form_row(form.deporte) }}
-                {% endif %}
+            {{ form_start(form) }}
+            {{ form_row(form.nombre) }}
+            <div class="row">
+                <div class="col-lg-6">
+                    {% if deporte is defined and deporte %}
+                        {{ form_row(form.deporte, {'attr': {'readonly': true}}) }}
+                    {% else %}
+                        {{ form_row(form.deporte) }}
+                    {% endif %}
+                </div>
+                <div class="col-lg-6">
+                    {% if provincia is defined and provincia %}
+                        {{ form_row(form.provincia, {'attr': {'readonly': true}}) }}
+                    {% else %}
+                        {{ form_row(form.provincia) }}
+                    {% endif %}
+                </div>
             </div>
-            <div class="col-lg-6">
-                {% if provincia %}
-                    {{ form_row(form.provincia, {'attr': {'readonly': true}}) }}
-                {% else %}
-                    {{ form_row(form.provincia) }}
-                {% endif %}
+            {{ form_row(form.coord) }}
+
+            <div id="mapid" class="my-2 border rounded "></div>
+
+            <div class="float-end my-2">
+                {{ form_row(form.enviar) }}
             </div>
-        </div>
-        {{ form_row(form.coord) }}
-
-        <div id="mapid" class="my-2 border rounded "></div>
-
-        <div class="float-end my-2">
-            {{ form_row(form.enviar) }}
-        </div>
-        {{ form_end(form) }}
+            {{ form_end(form) }}
 
     </div>
 {% endblock %}
