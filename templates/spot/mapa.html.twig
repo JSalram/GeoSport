@@ -1,0 +1,26 @@
+{% extends 'base.html.twig' %}
+
+{% block stylesheets %}
+    <style>
+        #mapid {
+            height: 450px;
+            z-index: 1;
+        }
+    </style>
+{% endblock %}
+
+{% block title %}Mapa{% endblock %}
+
+{% block body %}
+    <div class="container my-4">
+        <h2>Mapa de {{ deporte.nombre | capitalize }}</h2>
+
+        <div id="mapid" class="border rounded"></div>
+    </div>
+{% endblock %}
+
+{% block js %}
+    {% include 'spot/mapa.js.twig' %}
+{% endblock %}
+
+

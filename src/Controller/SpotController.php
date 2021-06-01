@@ -15,6 +15,26 @@ use Symfony\Component\Routing\Annotation\Route;
 class SpotController extends BaseController
 {
     /**
+     * @Route("/mapa/{deporte}", name="mapa")
+     * @Route("/mapa/{deporte}/{provincia}", name="mapa_prov")
+     */
+    public function mapa(string $deporte, string $provincia = null)
+    {
+        $deporte = $this->depRepo->findOneBy(['nombre' => $deporte]);
+        $spots = $this->spotRepo->findBy(['deporte' => $deporte]);
+
+        if ($provincia) {
+            $provincia = $this->provRepo->findOneBy(['nombre' => $provincia]);
+        }
+
+        return $this->render('spot/mapa.html.twig', [
+            'spots' => $spots,
+            'deporte' => $deporte,
+            'provincia' => $provincia,
+        ]);
+    }
+
+    /**
      * @Route("/listado/{deporte}", name="spots")
      * @Route("/listado/{deporte}/{provincia}", name="spots_prov")
      * @param Request $request

@@ -35,20 +35,26 @@
                             Añadir nuevo spot
                         </a>
                     {% endif %}
-                    <a href="#" class="btn btn-outline-primary my-2 w-100">Ver mapa</a>
+                    {% if provincia is defined and provincia %}
+                        <a href="{{ path('mapa_prov', {'deporte': deporte.nombre, 'provincia': provincia.nombre}) }}"
+                           class="btn btn-outline-primary my-2 w-100">Ver mapa</a>
+                    {% else %}
+                        <a href="{{ path('mapa', {'deporte': deporte.nombre}) }}"
+                           class="btn btn-outline-primary my-2 w-100">Ver mapa</a>
+                    {% endif %}
 
                     <h6 class="mt-2">Ver spots:</h6>
                     <div class="my-2 list-group">
                         <a class="list-group-item"
-                            {% if provincia is defined and provincia %}
-                                href="{{ path('spots_prov', {'deporte': deporte.nombre, 'provincia': provincia.nombre ,'order': 'fecha'}) }}">
+                                {% if provincia is defined and provincia %}
+                           href="{{ path('spots_prov', {'deporte': deporte.nombre, 'provincia': provincia.nombre ,'order': 'fecha'}) }}">
                             {% else %}
                                 href="{{ path('spots', {'deporte': deporte.nombre, 'order': 'fecha'}) }}">
                             {% endif %}
                             Recientes</a>
                         <a class="list-group-item"
-                            {% if provincia is defined and provincia %}
-                                href="{{ path('spots_prov', {'deporte': deporte.nombre, 'provincia': provincia.nombre ,'order': 'notaMedia'}) }}">
+                                {% if provincia is defined and provincia %}
+                           href="{{ path('spots_prov', {'deporte': deporte.nombre, 'provincia': provincia.nombre ,'order': 'notaMedia'}) }}">
                             {% else %}
                                 href="{{ path('spots', {'deporte': deporte.nombre, 'order': 'notaMedia'}) }}">
                             {% endif %}
