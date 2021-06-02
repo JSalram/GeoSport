@@ -32,6 +32,11 @@ class SettingsController extends BaseController
 
         /** @var User $usuario */
         $usuario = $this->getUser();
+
+        if (!$usuario->isVerified()) {
+            return $this->redirectToRoute('index');
+        }
+
         $v = new SettingsSaver($this->userRepo, $usuario, $request, $this->passwordEncoder);
         if ($request->isMethod('POST')) {
             // GENERAL //

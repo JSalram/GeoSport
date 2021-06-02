@@ -141,6 +141,7 @@ class SpotController extends BaseController
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $spot->setAprobado(null);
+            $spot->removeValoraciones();
             $this->em->flush();
             return $this->redirectToRoute('spot_view', ['id' => $spot->getId()]);
         }

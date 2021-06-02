@@ -182,6 +182,15 @@ class Spot
         return $this;
     }
 
+    public function removeValoraciones()
+    {
+        foreach ($this->valoraciones as $v)
+        {
+            $this->removeValoracion($v);
+        }
+        $this->notaMedia = 0;
+    }
+
     public function getUser(): ?User
     {
         return $this->user;

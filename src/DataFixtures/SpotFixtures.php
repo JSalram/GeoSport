@@ -42,6 +42,7 @@ class SpotFixtures extends Fixture implements DependentFixtureInterface
                 $user
             );
             $spot->setAprobado(true);
+            $spot->setCoord($provincia->getCoord());
 
             $valoracion = new Valoracion($i % 10, "Comentario de prueba", $user, $spot);
             $spot->addValoracion($valoracion);

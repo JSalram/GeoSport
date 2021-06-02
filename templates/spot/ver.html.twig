@@ -41,10 +41,14 @@
                     <h6>Valoración:</h6>
                     <p><span class="text-warning">{{ spot.notaMedia | nota | raw }}</span>
                         ({{ spot.valoraciones.count }})</p>
+                    {% if app.user and spot.aprobado %}
                     <a href="#comentar" class="btn btn-success my-1 w-100">Deja un comentario</a>
-                    {% if spot.user == app.user or app.user.admin %}
+                    {% endif %}
+                    {% if app.user and (spot.user == app.user or app.user.admin) %}
                         <div class="my-1 d-flex">
-                            <a class="btn btn-warning w-100 mx-1" href="{{ path('spot_edit', {'id': spot.id}) }}">Editar</a>
+                            <button type="button" class="btn btn-warning w-100 mx-1" data-bs-toggle="modal"
+                                    data-bs-target="#modalEditarSpot">Editar
+                            </button>
                             <button type="button" class="btn btn-danger w-100 mx-1" data-bs-toggle="modal"
                                     data-bs-target="#modalEliminarSpot">Eliminar
                             </button>
@@ -61,7 +65,7 @@
                 <div class="mt-3 {{ loop.last ? '' : 'border-bottom' }}">
                     <b>{{ valoracion.user.username }}</b>
                     <span class="text-secondary">{{ valoracion.fecha|date("d/m/y H:i") }}</span>
-                    {% if valoracion.user == app.user or app.user.admin %}
+                    {% if app.user and (valoracion.user == app.user or app.user.admin) %}
                         <a class="ms-2" href="{{ path('valoracion_eliminar', {'id': valoracion.id}) }}">
                             <i class="fas fa-times text-danger"></i>
                         </a>
@@ -103,6 +107,7 @@
         {% endif %}
     </div>
 
+    {# MODALES #}
     <div class="modal" id="modalEliminarSpot" tabindex="-1">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -117,6 +122,26 @@
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
                     <a class="btn btn-danger" href="{{ path('spot_remove', {'id': spot.id}) }}">
                         Eliminar</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="modalEditarSpot" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Editar Spot</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>¿Está seguro de que desea editar el spot? Si procede, éste volverá al estado pendiente de
+                        revisión.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <a class="btn btn-warning" href="{{ path('spot_edit', {'id': spot.id}) }}">
+                        Editar</a>
                 </div>
             </div>
         </div>
