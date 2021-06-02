@@ -21,7 +21,7 @@ class SpotController extends BaseController
     public function mapa(string $deporte, string $provincia = null)
     {
         $deporte = $this->depRepo->findOneBy(['nombre' => $deporte]);
-        $spots = $this->spotRepo->findBy(['deporte' => $deporte]);
+        $spots = $this->spotRepo->findBy(['deporte' => $deporte, 'aprobado' => true]);
 
         if ($provincia) {
             $provincia = $this->provRepo->findOneBy(['nombre' => $provincia]);

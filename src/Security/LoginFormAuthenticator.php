@@ -82,7 +82,7 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator implements P
         $password = $this->passwordEncoder->isPasswordValid($user, $credentials['password']);
         if (!$password) {
             // fail authentication with a custom error
-            throw  new CustomUserMessageAuthenticationException('Usuario y/o contraseña inválidos.');
+            throw new CustomUserMessageAuthenticationException('Usuario y/o contraseña inválidos.');
         }
         return $password;
     }

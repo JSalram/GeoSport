@@ -16,6 +16,8 @@ use Symfony\Component\Security\Core\User\UserInterface;
  */
 class User implements UserInterface
 {
+    const FOTO_DEFAULT = "https://www.worldfuturecouncil.org/wp-content/uploads/2020/06/blank-profile-picture-973460_1280-1.png";
+
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
@@ -65,6 +67,11 @@ class User implements UserInterface
     private $ultimoAcceso;
 
     /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $foto;
+
+    /**
      * User constructor.
      * @param null $email
      * @param null $username
@@ -78,6 +85,7 @@ class User implements UserInterface
         $this->ultimoAcceso = new DateTime();
         $this->valoraciones = new ArrayCollection();
         $this->spots = new ArrayCollection();
+        $this->foto = null;
     }
 
     public function getId(): ?int
@@ -250,6 +258,34 @@ class User implements UserInterface
         $this->ultimoAcceso = $ultimoAcceso;
 
         return $this;
+    }
+
+    public function getFoto(): ?string
+    {
+        if ($this->foto === null) {
+            return self::FOTO_DEFAULT;
+        } else {
+            return 'img/user/' . $this->foto;
+        }
+    }
+
+    public function setFoto(string $foto): self
+    {
+        $this->foto = $foto;
+
+        return $this;
+    }
+
+    public function removeFoto(): self
+    {
+        $this->foto = null;
+
+        return $this;
+    }
+
+    public function hasFoto(): bool
+    {
+        return $this->foto !== null;
     }
 
     public function isAdmin(): bool
