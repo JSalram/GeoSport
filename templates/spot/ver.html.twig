@@ -22,13 +22,13 @@
                 <a href="{{ path('spots_prov', {'deporte': spot.deporte.nombre, 'provincia': spot.provincia.nombre}) }}">
                     {{ spot.provincia.nombre }}</a>
             </div>
-            <div class="col-lg-8 my-2">
+            <div class="col-md-8 my-2">
                 {% if spot.coord is not null %}
                     <div id="mapid" class="border rounded"></div>
                 {% endif %}
             </div>
 
-            <div class="col-lg-4 rounded bg-secondary">
+            <div class="col-md-4 rounded bg-secondary">
                 <div class="text-light my-4">
                     <h6>Autor:</h6>
                     <h5 class="d-flex align-items-center">
@@ -77,7 +77,7 @@
         {% endif %}
 
         {% if spot.aprobado is null %}
-            <div class="alert alert-info">Spot pendiente de revisión.</div>
+            <div class="alert alert-info my-2">Spot pendiente de revisión.</div>
         {% elseif spot.aprobado %}
             {% if app.user and app.user.verified %}
                 <hr>
@@ -98,7 +98,7 @@
                 </form>
             {% endif %}
         {% else %}
-            <div class="alert alert-danger">
+            <div class="alert alert-danger my-2">
                 <p>Lo sentimos, su spot ha sido rechazado.</p>
                 {% if spot.revision %}
                     <p><b>Motivo:</b> {{ spot.revision }}</p>

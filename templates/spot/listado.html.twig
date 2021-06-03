@@ -23,7 +23,7 @@
             <hr class="bg-dark">
 
             <div class="row">
-                <div class="col-lg-2 border">
+                <div class="col-md-4 border">
                     <h6 class="mt-2">Opciones:</h6>
                     {% if app.user and app.user.verified %}
                         {% if provincia is defined and provincia %}
@@ -61,10 +61,10 @@
                             Mejor valorados</a>
                     </div>
                 </div>
-                <div class="col-lg-10 py-3">
+                <div class="col-md-8 py-3">
                     <div class="row">
                         {% for spot in spots %}
-                            <div class="col-lg-8 py-2">
+                            <div class="col-md-7 py-2">
                                 <h5>
                                     <a class="text-decoration-none" href="{{ path('spot_view', {'id': spot.id}) }}">
                                         {{ spot.nombre }}
@@ -73,7 +73,7 @@
                                 <small>Publicado el {{ spot.fecha | date('d/m/Y') }}</small>
                                 <p>En {{ spot.provincia.nombre }} - por {{ spot.user.username }}</p>
                             </div>
-                            <div class="col-lg-4 text-end">
+                            <div class="col-md-5 text-end">
                                 <h5>
                                     <span class="text-warning">{{ spot.notaMedia | nota | raw }}</span>
                                     {{ spot.notaMedia }}

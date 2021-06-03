@@ -62,7 +62,7 @@ function filtrarSpots() {
             let hr = index !== spot.length -1 ? '<hr class="bg-dark">' : '';
             bestSpots.append(`
                 <div class="row">
-                    <div class="col-lg-8">
+                    <div class="col-md-8">
                         <h5>
                             <a class="text-decoration-none" href="${url}">
                                 ${spot.nombre}
@@ -71,7 +71,7 @@ function filtrarSpots() {
                         <small>Publicado el ${spot.fecha}</small>
                         <p>En ${spot.provincia} - por ${spot.user}</p>
                     </div>
-                    <div class="col-lg-4 text-end">
+                    <div class="col-md-4 text-end">
                         <h5>
                             <span class="text-warning">${showValoracion(spot.notaMedia)}</span>
                             (${spot.numValoraciones})

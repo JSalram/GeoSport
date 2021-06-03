@@ -51,7 +51,7 @@
     <div id="busqueda" class="container text-center my-5">
         <div class="row">
             {% if app.user and app.user.verified %}
-            <div class="col-lg-8">
+            <div class="col-md-8">
             {% endif %}
 
                 <h4 class="my-4">Busca spots en tu provincia</h4>
@@ -75,7 +75,7 @@
             {% if app.user and app.user.verified %}
             </div>
 
-            <div id="nuevoSpot" class="col-lg-4">
+            <div id="nuevoSpot" class="col-md-4">
                 <h4 class="my-4">O añade uno tú mismo</h4>
                 <a href="{{ path('spot_new') }}" class="btn btn-outline-success">
                     <i class="fas fa-upload"></i> Nuevo Spot

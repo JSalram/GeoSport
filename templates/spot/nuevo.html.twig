@@ -30,14 +30,14 @@
             {{ form_start(form) }}
             {{ form_row(form.nombre) }}
             <div class="row">
-                <div class="col-lg-6">
+                <div class="col-md-6">
                     {% if deporte is defined and deporte %}
                         {{ form_row(form.deporte, {'attr': {'readonly': true}}) }}
                     {% else %}
                         {{ form_row(form.deporte) }}
                     {% endif %}
                 </div>
-                <div class="col-lg-6">
+                <div class="col-md-6">
                     {% if provincia is defined and provincia %}
                         {{ form_row(form.provincia, {'attr': {'readonly': true}}) }}
                     {% else %}
