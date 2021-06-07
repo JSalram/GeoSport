@@ -18,7 +18,7 @@ coord = '{{ spot.coord }}';
 lat = parseFloat(coord.split(',')[0]);
 lng = parseFloat(coord.split(',')[1]);
 L.marker([lat, lng]).addTo(mapa)
-        .bindPopup('<a href="{{ path('spot_view', {'id': spot.id}) }}">{{ spot.nombre }}</a>');
+    .bindPopup('<a class="text-decoration-none" href="{{ path('spot_view', {'id': spot.id}) }}">{{ spot.nombre }}</a>');
 {% endif %}
 {% endfor %}
 

@@ -43,7 +43,6 @@ function filtrarSpots() {
     let loading = $('#loading');
     let deporte = $('input[name="filtrarDeporte"]:checked').val();
     let orden = $('#orden option:selected').val();
-    console.log(orden);
 
     $.ajax({
         type: 'POST',
@@ -59,7 +58,7 @@ function filtrarSpots() {
         spots.forEach(function (spot, index) {
             let url = '{{ path('spot_view', {'id': 'id'}) }}';
             url = url.replace('id', spot.id);
-            let hr = index !== spot.length -1 ? '<hr class="bg-dark">' : '';
+            let hr = (index !== Object.keys(spots).length - 1) ? '<hr class="bg-dark">' : '';
             bestSpots.append(`
                 <div class="row">
                     <div class="col-md-8">

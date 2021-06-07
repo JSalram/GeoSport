@@ -1,8 +1,85 @@
+:root {
+    --success: #357266;
+    --success-hover: #225755;
+    --success-active: #18494C;
+    --primary: #0FA3B1;
+    --primary-hover: #0E94A1;
+    --primary-active: #0D8792;
+}
+
+/******************************/
+
 nav.navbar {
     /* TODO: Eliminar px en producción - Necesario en desarrollo */
     box-shadow: 0px 2px 5px black;
     z-index: 5;
 }
+
 .nav-item {
     margin: 0 2px;
 }
+
+a {
+    color: #0FA3B1;
+}
+
+a:hover {
+    color: var(--primary-hover);
+}
+
+/* BOOTSTRAP */
+.btn-success {
+    background-color: var(--success);
+    border-color: var(--success) !important;
+}
+
+.btn-success:hover {
+    background-color: var(--success-hover);
+}
+
+.btn-success:active,
+.btn-success:focus {
+    background-color: var(--success-active);
+}
+
+.btn-primary {
+    background-color: var(--primary);
+    border-color: var(--primary) !important;
+}
+
+.btn-primary:hover {
+    background-color: var(--primary-hover);
+}
+
+.btn-primary:active,
+.btn-primary:focus {
+    background-color: var(--primary-active);
+}
+
+.btn-outline-success {
+    color: var(--success);
+    border-color: var(--success) !important;
+}
+
+.btn-outline-success:hover {
+    background-color: var(--success-hover);
+}
+
+.btn-outline-primary {
+    color: var(--primary);
+    border-color: var(--primary) !important;
+}
+
+.btn-outline-primary:hover {
+    background-color: var(--primary-hover);
+}
+
+.form-check-input:checked {
+    border-color: var(--primary-hover);
+    background-color: var(--primary-hover);
+}
+
+.dropdown-item:active {
+    color: #fff !important;
+}
+

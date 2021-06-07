@@ -27,7 +27,8 @@
                             <img src="{{ asset('img/'~ deporte.nombre ~'_header.jpg') }}" class="d-block w-100" alt="">
                         </a>
                         <div class="carousel-caption d-none d-md-block">
-                            <h5>{{ deporte.nombre|capitalize }}</h5>
+                            <h5>Spots de {{ deporte.nombre|capitalize }}</h5>
+                            <small>Click para ver</small>
                         </div>
                     </div>
                 {% endfor %}
@@ -110,7 +111,7 @@
                 <button class="btn btn-primary my-4 w-100">Filtrar</button>
                 <div id="loading" class="text-center"><i class="fas fa-spinner"></i> Cargando...</div>
             </div>
-            <div class="col-md-8 spots">
+            <div class="col-md-8 spots py-2">
             </div>
         </div>
     </div>
