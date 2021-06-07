@@ -83,3 +83,9 @@ a:hover {
     color: #fff !important;
 }
 
+/* MEDIA QUERYS */
+@media (max-width: 400px) {
+    .toast {
+        width: 100%;
+    }
+}

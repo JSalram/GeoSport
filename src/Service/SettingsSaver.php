@@ -6,6 +6,7 @@ namespace App\Service;
 
 use App\Entity\User;
 use App\Repository\UserRepository;
+use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
@@ -34,12 +35,18 @@ class SettingsSaver
      */
     private $passwordEncoder;
 
+    /**
+     * @var bool
+     */
+    public $cambios;
+
     public function __construct($userRepo, $usuario, $request, $passwordEncoder)
     {
         $this->userRepo = $userRepo;
         $this->usuario = $usuario;
         $this->request = $request;
         $this->passwordEncoder = $passwordEncoder;
+        $this->cambios = false;
     }
 
     /**
@@ -60,14 +67,17 @@ class SettingsSaver
             case 'password':
                 $valido = $this->passwordEncoder->isPasswordValid($this->usuario, $this->request->get('oldPassword'))
                     && $this->request->get('newPassword') === $this->request->get('repeatPassword');
-                dump($valido);
+                break;
             case 'foto':
-                return $this->request->files->get('foto') !== null
-                    && $this->request->files->get('foto') instanceof UploadedFile;
+                $filename = $this->request->files->get('foto');
+                $valido = $filename !== null && $filename instanceof UploadedFile;
         }
 
-        if ($valido && $setting !== 'password') {
+        if ($valido && $setting !== 'password' && $setting !== 'foto') {
             $valido = empty($this->userRepo->findBy([$setting => $this->request->get($setting)]));
+        }
+        if (!$this->cambios) {
+            $this->cambios = $valido;
         }
 
         return $valido;
@@ -78,20 +88,23 @@ class SettingsSaver
         /** @var UploadedFile $foto */
         $foto = $this->request->files->get('foto');
 
-        // this condition is needed because the 'brochure' field is not required
-        // so the PDF file must be processed only when a file is uploaded
         if ($foto) {
             $originalFilename = pathinfo($foto->getClientOriginalName(), PATHINFO_FILENAME);
-            // this is needed to safely include the file name as part of the URL
-            $safeFilename = $slugger->slug($originalFilename);
-            $newFilename = $safeFilename . '-' . uniqid() . '.' . $foto->guessExtension();
+            if (in_array($foto->getClientOriginalExtension(), ['jpg', 'jpeg', 'png'])) {
+                $safeFilename = $slugger->slug($originalFilename);
+                $newFilename = $safeFilename . '-' . uniqid() . '.' . $foto->guessExtension();
 
-            // Move the file to the directory where brochures are stored
-            try {
-                $foto->move($fotoPerfil, $newFilename);
-                $this->usuario->setFoto($newFilename);
-            } catch (FileException $e) {
-                // ... handle exception if something happens during file upload
+                try {
+                    if ($this->usuario->hasFoto()) {
+                        $filesystem = new Filesystem();
+                        $filesystem->remove($this->usuario->getFoto());
+                    }
+                    $foto->move($fotoPerfil, $newFilename);
+                    $this->usuario->setFoto($newFilename);
+                } catch (FileException $e) {
+                }
+            } else {
+                $this->cambios = false;
             }
         }
     }

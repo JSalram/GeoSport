@@ -41,8 +41,8 @@
                     <h6>Valoración:</h6>
                     <p><span class="text-warning">{{ spot.notaMedia | nota | raw }}</span>
                         ({{ spot.valoraciones.count }})</p>
-                    {% if app.user and spot.aprobado %}
-                    <a href="#comentar" class="btn btn-success my-1 w-100">Deja un comentario</a>
+                    {% if app.user and spot.aprobado and not spot.hasValoracion(app.user) %}
+                        <a href="#comentar" class="btn btn-success my-1 w-100">Deja tu valoración</a>
                     {% endif %}
                     {% if app.user and (spot.user == app.user or app.user.admin) %}
                         <div class="my-1 d-flex">
@@ -63,14 +63,22 @@
             <h4 class="text-center">Comentarios</h4>
             {% for valoracion in spot.valoraciones %}
                 <div class="mt-3 {{ loop.last ? '' : 'border-bottom' }}">
-                    <b>{{ valoracion.user.username }}</b>
-                    <span class="text-secondary">{{ valoracion.fecha|date("d/m/y H:i") }}</span>
-                    {% if app.user and (valoracion.user == app.user or app.user.admin) %}
-                        <a class="ms-2" href="{{ path('valoracion_eliminar', {'id': valoracion.id}) }}">
-                            <i class="fas fa-times text-danger"></i>
-                        </a>
-                    {% endif %}
-                    <p class="text-warning">{{ valoracion.nota | nota | raw }}</p>
+                    <div class="d-flex align-content-top">
+                        <div class="d-inline-block">
+                            <img src="{{ asset(valoracion.user.foto) }}" alt="Profile Picture"
+                                 class="rounded-circle me-2" id="userNavbar" width="40" height="40">
+                        </div>
+                        <div class="d-inline-block">
+                            <b>{{ valoracion.user.username }}</b>
+                            <span class="text-secondary">{{ valoracion.fecha|date("d/m/y H:i") }}</span>
+                            {% if app.user and (valoracion.user == app.user or app.user.admin) %}
+                                <a class="ms-2" href="{{ path('valoracion_eliminar', {'id': valoracion.id}) }}">
+                                    <i class="fas fa-times text-danger"></i>
+                                </a>
+                            {% endif %}
+                            <p class="text-warning">{{ valoracion.nota | nota | raw }}</p>
+                        </div>
+                    </div>
                     <p>{{ valoracion.comentario }}</p>
                 </div>
             {% endfor %}
@@ -79,22 +87,16 @@
         {% if spot.aprobado is null %}
             <div class="alert alert-info my-2">Spot pendiente de revisión.</div>
         {% elseif spot.aprobado %}
-            {% if app.user and app.user.verified %}
+            {% if app.user and app.user.verified and not spot.hasValoracion(app.user) %}
                 <hr>
                 <form id="comentar" action="{{ path('comentar_spot', {'id': spot.id}) }}" method="post">
                     <input type="hidden" name="deporte" value="{{ deporte }}">
-                    <div class="row">
-                        <div class="col-md-10">
-                            <label for="comentario" class="form-label">Comentar</label>
-                            <textarea class="form-control" id="comentario" name="comentario" rows="3"
-                                      maxlength="255"></textarea>
-                        </div>
-                        <div class="col-md-2">
-                            <label for="nota" class="form-label">Nota</label>
-                            <input type="number" id="nota" name="nota" class="form-control" value="0" min="0" max="10">
-                        </div>
-                    </div>
-                    <input type="submit" class="btn btn-primary my-3" value="Enviar">
+                    <label for="comentario" class="form-label">Comentar</label>
+                    <textarea class="form-control" id="comentario" name="comentario" rows="2"
+                              maxlength="255" placeholder="Estuve una vez aquí y ..."></textarea>
+                    <p class="form-label">Nota</p>
+                    {% include 'spot/valoracionEstrellas.html.twig' %}
+                    <input type="submit" class="btn btn-primary fs-5 d-block my-3 ms-auto" value="Enviar">
                 </form>
             {% endif %}
         {% else %}

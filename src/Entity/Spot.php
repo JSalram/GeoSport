@@ -266,4 +266,16 @@ class Spot
 
         return $this;
     }
+
+    public function hasValoracion(User $user): bool
+    {
+        /** @var Valoracion $valoracion */
+        foreach ($this->valoraciones as $valoracion) {
+            if ($valoracion->getUser() === $user) {
+                return true;
+            }
+        }
+
+        return false;
+    }
 }

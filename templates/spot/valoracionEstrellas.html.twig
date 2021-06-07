@@ -1,0 +1,65 @@
+<style>
+    .rating {
+        border: none;
+    }
+
+    .rating > [id^="star"] {
+        display: none
+    }
+
+    .rating > label:before,
+    .fa-eraser {
+        margin: 4px;
+        font-size: 2em;
+        display: inline-block;
+        content: "\f005"
+    }
+
+    .rating > label,
+    .fa-eraser {
+        color: #ddd;
+        float: right;
+    }
+
+    .fa-eraser:hover,
+    #star0:checked ~ .fa-eraser {
+        color: black;
+    }
+
+    .rating > [id^="star"]:checked ~ label,
+    .rating:not(:checked) > label:hover,
+    .rating:not(:checked) > label:hover ~ label {
+        color: #FFD700
+    }
+
+    .rating > [id^="star"]:checked + label:hover,
+    .rating > [id^="star"]:checked ~ label:hover,
+    .rating > label:hover ~ [id^="star"]:checked ~ label,
+    .rating > [id^="star"]:checked ~ label:hover ~ label {
+        color: #FFED85
+    }
+</style>
+
+<div class="container d-flex justify-content-start">
+    <fieldset class="rating">
+        <input type="radio" id="star5" name="nota" value="10"/>
+        <label class="fa fa-star full" for="star5"></label>
+        <input type="radio" id="star4" name="nota" value="8"/>
+        <label class="fa fa-star full" for="star4"></label>
+        <input type="radio" id="star3" name="nota" value="6"/>
+        <label class="fa fa-star full" for="star3"></label>
+        <input type="radio" id="star2" name="nota" value="4"/>
+        <label class="fa fa-star full" for="star2"></label>
+        <input type="radio" id="star1" name="nota" value="2"/>
+        <label class="fa fa-star full" for="star1"></label>
+        <input type="radio" class="d-none" id="star0" name="nota" value="0" checked>
+        <i class="fas fa-eraser"></i>
+    </fieldset>
+</div>
+
+
+<script>
+    $('.fa-eraser').click(function () {
+        $('#star0').prop("checked", true);
+    })
+</script>

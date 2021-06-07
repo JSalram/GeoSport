@@ -33,7 +33,7 @@ class SpotFixtures extends Fixture implements DependentFixtureInterface
         $provincia = $this->provRepo->findOneBy(['nombre' => 'Cádiz']);
         $user = $this->userRepo->findOneBy(['username' => 'Salram']);
 
-        for ($i = 0; $i < 20; $i++) {
+        for ($i = 0; $i < 10; $i++) {
             $spot = new Spot(
                 'Spot de prueba ' . ($i + 1),
                 $i % 2 == 0 ? $skate : $surf,

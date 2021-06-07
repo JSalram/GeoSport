@@ -4,7 +4,6 @@ namespace App\Controller;
 
 use App\Entity\User;
 use App\Service\SettingsSaver;
-use Couchbase\Document;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -37,30 +36,30 @@ class SettingsController extends BaseController
             return $this->redirectToRoute('index');
         }
 
-        $v = new SettingsSaver($this->userRepo, $usuario, $request, $this->passwordEncoder);
+        $saver = new SettingsSaver($this->userRepo, $usuario, $request, $this->passwordEncoder);
         if ($request->isMethod('POST')) {
             // GENERAL //
-            if ($v->validar('foto')) {
-                if ($usuario->hasFoto()) {
-                    $filesystem = new Filesystem();
-                    $filesystem->remove($usuario->getFoto());
-                }
-                $v->actualizaFoto($slugger, $this->getParameter('foto_perfil'));
+            if ($saver->validar('foto')) {
+                $saver->actualizaFoto($slugger, $this->getParameter('foto_perfil'));
             }
-            if ($v->validar('username'))
+            if ($saver->validar('username'))
                 $usuario->setUsername($request->get('username'));
-            if ($v->validar('email'))
+            if ($saver->validar('email'))
                 $usuario->setEmail($request->get('email'));
 
             // CONTRASEÑA //
             if (!empty($request->get('oldPassword')) && !empty($request->get('newPassword'))
-                && !empty($request->get('repeatPassword')) && $v->validar('password')) {
+                && !empty($request->get('repeatPassword')) && $saver->validar('password')) {
                 $usuario->setPassword($this->passwordEncoder->encodePassword($usuario, $request->get('newPassword')));
             }
 
-            $this->em->flush();
-            $this->addFlash('ajustesGuardados', 'OK');
-            return $this->redirectToRoute('user_settings');
+            if ($saver->cambios) {
+                $this->em->flush();
+                $this->addFlash('ajustesGuardados', 'success');
+                return $this->redirectToRoute('user_settings');
+            } else {
+                $this->addFlash('ajustesGuardados', 'danger');
+            }
         }
 
         $mySpots = $this->spotRepo->findByUser($usuario, $pagina, $spotsPagina);

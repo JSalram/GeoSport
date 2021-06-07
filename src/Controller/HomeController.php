@@ -64,8 +64,7 @@ class HomeController extends BaseController
     public function revision(Request $request)
     {
         $spotsPendientes = $this->spotRepo->findBy(['aprobado' => null]);
-        if (!$spotsPendientes) {
-            dump($spotsPendientes);
+        if (empty($spotsPendientes)) {
             $this->addFlash('info', 'No hay spots en revisión en estos momentos. Inténtelo de nuevo más tarde.');
             return $this->redirectToRoute('index');
         }
