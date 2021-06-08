@@ -116,6 +116,7 @@ class HomeController extends BaseController
                     'provincia' => $bs->getProvincia()->getNombre(),
                     'deporte' => $bs->getDeporte()->getNombre(),
                     'user' => $bs->getUser()->getUsername(),
+                    'coord' => $bs->getCoord(),
                 ];
             }
 

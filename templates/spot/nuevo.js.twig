@@ -31,12 +31,6 @@ L.tileLayer(
 
 $(document).ready(function () {
     //// INICIALIZACIONES ////
-    function onMapClick(e) {
-        spot.setLatLng(e.latlng);
-        spot.bindPopup(e.latlng.lat + ", " + e.latlng.lng);
-        $('#spot_coord').val(e.latlng.lat + "," + e.latlng.lng);
-    }
-
     mapa.on("click", onMapClick);
 
     $('#spot_provincia').change(function () {
@@ -46,6 +40,12 @@ $(document).ready(function () {
     getProvinciaCoord();
     {% endif %}
 });
+
+function onMapClick(e) {
+    spot.setLatLng(e.latlng);
+    spot.bindPopup(e.latlng.lat + ", " + e.latlng.lng);
+    $('#spot_coord').val(e.latlng.lat + "," + e.latlng.lng);
+}
 
 function getProvinciaCoord() {
     $.ajax({
@@ -64,6 +64,7 @@ function getProvinciaCoord() {
 
         mapa.setView([lat, lng], zoom);
         spot.setLatLng([lat, lng]);
+        $('#spot_coord').val(lat + "," + lng);
     });
 
 }

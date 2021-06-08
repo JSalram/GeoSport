@@ -45,7 +45,7 @@ class SpotController extends BaseController
     public function listado(Request $request, string $deporte, string $provincia = null): Response
     {
         $spotsPagina = 8;
-        $order = $request->get('order', 'fecha');
+        $order = $request->get('order', 'notaMedia');
         $pagina = intval($request->get('p', 1));
 
         $deporte = $this->depRepo->findOneBy(['nombre' => $deporte]);

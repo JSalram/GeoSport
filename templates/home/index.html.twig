@@ -26,7 +26,7 @@
                         <a href="{{ path('spots', { 'deporte': deporte.nombre }) }}">
                             <img src="{{ asset('img/'~ deporte.nombre ~'_header.jpg') }}" class="d-block w-100" alt="">
                         </a>
-                        <div class="carousel-caption d-none d-md-block">
+                        <div class="carousel-caption d-block">
                             <h5>Spots de {{ deporte.nombre|capitalize }}</h5>
                             <small>Click para ver</small>
                         </div>

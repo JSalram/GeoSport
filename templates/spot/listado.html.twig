@@ -1,6 +1,15 @@
 {% extends 'base.html.twig' %}
 {% from 'comunes/_paginacion.html.twig' import paginar %}
 
+{% block stylesheets %}
+    <style>
+        [id^=mapid] {
+            height: 100px;
+            z-index: 1;
+        }
+    </style>
+{% endblock %}
+
 {% block title %}
     {% if provincia %}
         {{ provincia.nombre }}
@@ -62,12 +71,12 @@
                     </div>
                 </div>
                 <div class="col-md-8 col-lg-9 py-4">
-                    <div class="row">
+                    <div class="row d-flex align-items-center">
                         {% for spot in spots %}
                             {% if not loop.first %}
                                 <hr class="bg-secondary">
                             {% endif %}
-                            <div class="col-md-7 py-2">
+                            <div class="col-md-8 py-2">
                                 <h5>
                                     <a class="text-decoration-none" href="{{ path('spot_view', {'id': spot.id}) }}">
                                         {{ spot.nombre }}
@@ -75,13 +84,11 @@
                                 </h5>
                                 <small>Publicado el {{ spot.fecha | date('d/m/Y') }}</small>
                                 <p>En {{ spot.provincia.nombre }} - por {{ spot.user.username }}</p>
+                                <span class="text-warning">{{ spot.notaMedia | nota | raw }}</span>
+                                ({{ spot.valoraciones.count }})
                             </div>
-                            <div class="col-md-5 text-end">
-                                <h5>
-                                    <span class="text-warning">{{ spot.notaMedia | nota | raw }}</span>
-                                    {{ spot.notaMedia }}
-                                    ({{ spot.valoraciones.count }})
-                                </h5>
+                            <div class="col-md-4 mb-2">
+                                <div id="mapid_{{ spot.id }}"></div>
                             </div>
                         {% endfor %}
                     </div>
@@ -101,4 +108,8 @@
                 {% endif %}.</p>
         {% endif %}
     </div>
+{% endblock %}
+
+{% block js %}
+    {% include 'spot/listado.js.twig' %}
 {% endblock %}
