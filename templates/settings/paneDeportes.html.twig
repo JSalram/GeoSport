@@ -1,0 +1,36 @@
+<div class="tab-pane fade {% if paneDeporte %}active show{% endif %}" id="crud-deportes" role="tabpanel">
+    <div class="card-body pb-3">
+
+        <h5>Deportes</h5>
+
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Descripción</th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for deporte in deportes %}
+                <tr>
+                    <td>{{ deporte.nombre }}</td>
+                    <td>{{ deporte.descripcion }}</td>
+                    <td>
+                        <a href="{{ path('deporte_edit', {'id': deporte.id}) }}">
+                            <i class="fas fa-edit"></i>
+                        </a>
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="4">No hay spots actualmente</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+
+        <a href="{{ path('deporte_new') }}" class="btn btn-primary">Nuevo deporte</a>
+
+    </div>
+</div>

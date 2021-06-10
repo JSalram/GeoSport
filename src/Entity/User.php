@@ -47,7 +47,7 @@ class User implements UserInterface
     private $email;
 
     /**
-     * @ORM\OneToMany(targetEntity=Valoracion::class, mappedBy="usuario", orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity=Valoracion::class, mappedBy="user", orphanRemoval=true)
      */
     private $valoraciones;
 
@@ -214,6 +214,18 @@ class User implements UserInterface
         return $this->spots;
     }
 
+    public function getSpotsAprobados(): array
+    {
+        $spotsAprobados = [];
+        /** @var Spot $s */
+        foreach ($this->spots as $s) {
+            if ($s->getAprobado())
+                $spotsAprobados[] = $s;
+        }
+
+        return $spotsAprobados;
+    }
+
     public function addSpot(Spot $spot): self
     {
         if (!$this->spots->contains($spot)) {
@@ -291,5 +303,16 @@ class User implements UserInterface
     public function isAdmin(): bool
     {
         return in_array('ROLE_ADMIN', $this->getRoles());
+    }
+
+    public function isModerador(): bool
+    {
+        return count($this->getSpotsAprobados()) >= 1
+            && count($this->getValoraciones()) >= 4;
+    }
+
+    public function puedeRevisar(): bool
+    {
+        return $this->isAdmin() || $this->isModerador();
     }
 }

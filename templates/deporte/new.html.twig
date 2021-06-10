@@ -1,0 +1,18 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}New Deporte{% endblock %}
+
+{% block body %}
+    <div class="container my-4">
+        <p class="mb-2">
+            <a class="text-decoration-none fw-bold" href="javascript:history.back()">
+                <i class="fas fa-arrow-left"></i>
+                Volver
+            </a>
+        </p>
+
+        <h4>Añadir deporte</h4>
+
+        {{ include('deporte/_form.html.twig') }}
+    </div>
+{% endblock %}

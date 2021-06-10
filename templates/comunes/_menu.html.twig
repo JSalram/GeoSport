@@ -18,7 +18,7 @@
                             <li>
                                 <hr class="dropdown-divider">
                             </li>
-                            {% if app.user.admin %}
+                            {% if app.user.puedeRevisar %}
                                 <li>
                                     <a href="{{ path('revision') }}" class="text-success dropdown-item">
                                         Revisar Spots</a>

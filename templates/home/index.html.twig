@@ -12,109 +12,121 @@
 
 {% block body %}
     {# CABECERA #}
-    <header>
-        <div id="imgHeader" class="carousel slide" data-bs-ride="carousel">
-            <div class="carousel-indicators">
-                <button type="button" data-bs-target="#imgHeader" data-bs-slide-to="0" class="active"
-                        aria-current="true" aria-label="Slide 1"></button>
-                <button type="button" data-bs-target="#imgHeader" data-bs-slide-to="1"
-                        aria-label="Slide 2"></button>
-            </div>
-            <div class="carousel-inner">
-                {% for deporte in deportes %}
-                    <div class="carousel-item {{ loop.first ? 'active' }}">
-                        <a href="{{ path('spots', { 'deporte': deporte.nombre }) }}">
-                            <img src="{{ asset('img/'~ deporte.nombre ~'_header.jpg') }}" class="d-block w-100" alt="">
-                        </a>
-                        <div class="carousel-caption d-block">
-                            <h5>Spots de {{ deporte.nombre|capitalize }}</h5>
-                            <small>Click para ver</small>
-                        </div>
-                    </div>
-                {% endfor %}
-            </div>
-            <button class="carousel-control-prev" type="button" data-bs-target="#imgHeader"
-                    data-bs-slide="prev">
-                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                <span class="visually-hidden">Previous</span>
-            </button>
-            <button class="carousel-control-next" type="button" data-bs-target="#imgHeader"
-                    data-bs-slide="next">
-                <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                <span class="visually-hidden">Next</span>
-            </button>
-        </div>
-    </header>
-
-    {% include 'comunes/_avisos.html.twig' %}
-
-    {# CUADRO DE BÚSQUEDA #}
-    <div id="busqueda" class="container text-center my-5">
-        <div class="row">
-            {% if app.user and app.user.verified %}
-            <div class="col-md-8">
-            {% endif %}
-
-                <h4 class="my-4">Busca spots en tu provincia</h4>
-                <form action="{{ path('busqueda') }}">
-                    <div class="d-flex my-3">
-                        <input id="buscar" name="provincia" class="form-control me-2" type="search"
-                               placeholder="Búsqueda..." aria-label="Search" autocomplete="off">
-                        <button class="btn btn-success" type="submit">Buscar</button>
-                    </div>
+    {% if deportes|length > 0 %}
+        <header>
+            <div id="imgHeader" class="carousel slide" data-bs-ride="carousel">
+                <div class="carousel-indicators">
                     {% for deporte in deportes %}
-                        <div class="form-check d-inline-block mx-3">
+                        <button type="button" data-bs-target="#imgHeader" data-bs-slide-to="{{ loop.index0 }}"
+                                {% if loop.first %}class="active"{% endif %}
+                                aria-current="true" aria-label="Slide {{ loop.index }}"></button>
+                    {% endfor %}
+                </div>
+                <div class="carousel-inner">
+                    {% for deporte in deportes %}
+                        <div class="carousel-item {{ loop.first ? 'active' }}">
+                            <a href="{{ path('spots', { 'deporte': deporte.nombre }) }}">
+                                <img src="{{ asset('img/'~ deporte.nombre ~'_header.jpg') }}" class="d-block w-100"
+                                     alt="">
+                            </a>
+                            <div class="carousel-caption d-block">
+                                <h5>Spots de {{ deporte.nombre|capitalize }}</h5>
+                                <small>Click para ver</small>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+                {% if deportes|length > 1 %}
+                    <button class="carousel-control-prev" type="button" data-bs-target="#imgHeader"
+                            data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Previous</span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#imgHeader"
+                            data-bs-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Next</span>
+                    </button>
+                {% endif %}
+            </div>
+        </header>
+
+        {% include 'comunes/_avisos.html.twig' %}
+
+        {# CUADRO DE BÚSQUEDA #}
+        <div id="busqueda" class="container text-center my-5">
+            <div class="row">
+                {% if app.user and app.user.verified %}
+                <div class="col-md-8">
+                    {% endif %}
+
+                    <h4 class="my-4">Busca spots en tu provincia</h4>
+                    <form action="{{ path('busqueda') }}">
+                        <div class="d-flex my-3">
+                            <input id="buscar" name="provincia" class="form-control me-2" type="search"
+                                   placeholder="Búsqueda..." aria-label="Search" autocomplete="off">
+                            <button class="btn btn-success" type="submit">Buscar</button>
+                        </div>
+                        {% for deporte in deportes %}
+                            <div class="form-check d-inline-block mx-3">
+                                <label class="form-check-label">
+                                    <input class="form-check-input" type="radio" name="deporte"
+                                           value="{{ deporte.nombre }}" {{ loop.first ? 'checked' }}>
+                                    {{ deporte.nombre|capitalize }}
+                                </label>
+                            </div>
+                        {% endfor %}
+                    </form>
+
+                    {% if app.user and app.user.verified %}
+                </div>
+
+                <div id="nuevoSpot" class="col-md-4">
+                    <h4 class="my-4">O añade uno tú mismo</h4>
+                    <a href="{{ path('spot_new') }}" class="btn btn-outline-success">
+                        <i class="fas fa-upload"></i> Nuevo Spot
+                    </a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+
+        {# SPOTS POPULARES #}
+        <div id="popular" class="container my-5">
+            <h3 class="my-5 text-center">Spots populares <span id="deporteSeleccionado"></span></h3>
+            <div class="row">
+                <div class="col-md-4 p-4 border">
+                    <h5>Filtrar por</h5>
+                    {% for deporte in deportes %}
+                        <div class="form-check my-2">
                             <label class="form-check-label">
-                                <input class="form-check-input" type="radio" name="deporte"
-                                       value="{{ deporte.nombre }}" {{ loop.first ? 'checked' }}>
+                                <input class="form-check-input" type="radio" name="filtrarDeporte"
+                                       value="{{ deporte.nombre }}"
+                                       id="{{ deporte.nombre }}" {{ loop.first ? 'checked' }}>
                                 {{ deporte.nombre|capitalize }}
                             </label>
                         </div>
                     {% endfor %}
-                </form>
-
-            {% if app.user and app.user.verified %}
-            </div>
-
-            <div id="nuevoSpot" class="col-md-4">
-                <h4 class="my-4">O añade uno tú mismo</h4>
-                <a href="{{ path('spot_new') }}" class="btn btn-outline-success">
-                    <i class="fas fa-upload"></i> Nuevo Spot
-                </a>
-            </div>
-            {% endif %}
-        </div>
-    </div>
-
-
-    {# SPOTS POPULARES #}
-    <div id="popular" class="container my-5">
-        <h3 class="my-5 text-center">Spots populares <span id="deporteSeleccionado"></span></h3>
-        <div class="row">
-            <div class="col-md-4 p-4 border">
-                <h5>Filtrar por</h5>
-                {% for deporte in deportes %}
-                    <div class="form-check my-2">
-                        <label class="form-check-label">
-                            <input class="form-check-input" type="radio" name="filtrarDeporte"
-                                   value="{{ deporte.nombre }}"
-                                   id="{{ deporte.nombre }}" {{ loop.first ? 'checked' }}>
-                            {{ deporte.nombre|capitalize }}
-                        </label>
-                    </div>
-                {% endfor %}
-                <label for="orden">Ordenar por: </label>
-                <select id="orden" class="form-select">
-                    <option value="notaMedia">Valoración</option>
-                    <option value="fecha">Recientes</option>
-                </select>
-                <button class="btn btn-primary my-4 w-100">Filtrar</button>
-                <div id="loading" class="text-center"><i class="fas fa-spinner"></i> Cargando...</div>
-            </div>
-            <div class="col-md-8 spots py-2">
+                    <label for="orden">Ordenar por: </label>
+                    <select id="orden" class="form-select">
+                        <option value="notaMedia">Valoración</option>
+                        <option value="fecha">Recientes</option>
+                    </select>
+                    <button class="btn btn-primary my-4 w-100">Filtrar</button>
+                    <div id="loading" class="text-center"><i class="fas fa-spinner"></i> Cargando...</div>
+                </div>
+                <div class="col-md-8 spots py-2">
+                </div>
             </div>
         </div>
-    </div>
+    {% else %}
+        <div class="container my-4">
+            <h1 class="text-center my-4">No tienes deportes registrados actualmente</h1>
+            <h4 class="text-center text-secondary my-4">Accede a tu configuración para añadir nuevos deportes y comienza
+                a utilizar la plataforma</h4>
+        </div>
+    {% endif %}
 {% endblock %}
 
 {% block js %}

@@ -8,28 +8,28 @@
 
 {% block body %}
     <div class="container my-4">
+        <p class="mb-2">
+            <a class="text-decoration-none fw-bold" href="javascript:history.back()">
+                <i class="fas fa-arrow-left"></i>
+                Volver
+            </a>
+        </p>
+        <h3>{{ spot.nombre }}</h3>
+        <div id="rutas">
+            <a href="{{ path('spots', {'deporte': spot.deporte.nombre}) }}">{{ spot.deporte.nombre | capitalize }}</a>
+            ➝
+            <a href="{{ path('spots_prov', {'deporte': spot.deporte.nombre, 'provincia': spot.provincia.nombre}) }}">
+                {{ spot.provincia.nombre }}</a>
+        </div>
         <div class="row">
-            <p class="mb-4">
-                <a class="text-decoration-none" href="javascript:history.back()">
-                    <i class="fas fa-arrow-left"></i>
-                    Volver
-                </a>
-            </p>
-            <h3>{{ spot.nombre }}</h3>
-            <div id="rutas">
-                <a href="{{ path('spots', {'deporte': spot.deporte.nombre}) }}">{{ spot.deporte.nombre | capitalize }}</a>
-                ➝
-                <a href="{{ path('spots_prov', {'deporte': spot.deporte.nombre, 'provincia': spot.provincia.nombre}) }}">
-                    {{ spot.provincia.nombre }}</a>
-            </div>
             <div class="col-md-8 my-2">
                 {% if spot.coord is not null %}
                     <div id="mapid" class="border rounded"></div>
                 {% endif %}
             </div>
 
-            <div class="col-md-4 rounded spotInfo">
-                <div class="text-light my-4">
+            <div class="col-md-4 rounded spotInfo text-light py-4 d-flex flex-column justify-content-between">
+                <div>
                     <h6>Autor:</h6>
                     <h5 class="d-flex align-items-center">
                         <img src="{{ asset(spot.user.foto) }}" alt="Profile Picture"
@@ -41,6 +41,8 @@
                     <h6>Valoración:</h6>
                     <p><span class="text-warning">{{ spot.notaMedia | nota | raw }}</span>
                         ({{ spot.valoraciones.count }})</p>
+                </div>
+                <div>
                     {% if app.user and spot.aprobado and not spot.hasValoracion(app.user) %}
                         <a href="#comentar" class="btn btn-success my-1 w-100">Deja tu valoración</a>
                     {% endif %}
@@ -72,7 +74,8 @@
                             <b>{{ valoracion.user.username }}</b>
                             <span class="text-secondary">{{ valoracion.fecha|date("d/m/y H:i") }}</span>
                             {% if app.user and (valoracion.user == app.user or app.user.admin) %}
-                                <a class="ms-2" href="{{ path('valoracion_eliminar', {'id': valoracion.id}) }}">
+                                <a class="ms-2" data-bs-toggle="modal" href="javascript:void(0)"
+                                   data-bs-target="#modalEliminarValoracion_{{ valoracion.id }}">
                                     <i class="fas fa-times text-danger"></i>
                                 </a>
                             {% endif %}
@@ -148,6 +151,29 @@
             </div>
         </div>
     </div>
+
+    {% for valoracion in spot.valoraciones %}
+        {% if app.user and (valoracion.user == app.user or app.user.admin) %}
+            <div class="modal" id="modalEliminarValoracion_{{ valoracion.id }}" tabindex="-1">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Eliminar Valoración</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <p>¿Está seguro de que desea eliminar su valoración? Esta acción es irreversible.</p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                            <a class="btn btn-danger" href="{{ path('valoracion_eliminar', {'id': valoracion.id}) }}">
+                                Eliminar</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+    {% endfor %}
 {% endblock %}
 
 {% block js %}

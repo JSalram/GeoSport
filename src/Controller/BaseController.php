@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\User;
 use App\Repository\DeporteRepository;
 use App\Repository\ProvinciaRepository;
 use App\Repository\SpotRepository;
@@ -13,39 +14,25 @@ use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 class BaseController extends AbstractController
 {
-    /**
-     * @var EntityManagerInterface
-     */
+    /** @var EntityManagerInterface */
     protected $em;
 
-    /**
-     * @var DeporteRepository
-     */
+    /** @var DeporteRepository */
     protected $depRepo;
 
-    /**
-     * @var ProvinciaRepository
-     */
+    /** @var ProvinciaRepository */
     protected $provRepo;
 
-    /**
-     * @var SpotRepository
-     */
+    /** @var SpotRepository */
     protected $spotRepo;
 
-    /**
-     * @var ValoracionRepository
-     */
+    /** @var ValoracionRepository */
     protected $valoracionRepo;
 
-    /**
-     * @var UserRepository
-     */
+    /** @var UserRepository */
     protected $userRepo;
 
-    /**
-     * @var UserPasswordEncoderInterface
-     */
+    /** @var UserPasswordEncoderInterface */
     protected $passwordEncoder;
 
     public function __construct(EntityManagerInterface $em, DeporteRepository $depRepo,

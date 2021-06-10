@@ -2,13 +2,10 @@
 
 namespace App\Controller;
 
+use App\Entity\User;
 use App\Entity\Valoracion;
-use App\Repository\SpotRepository;
-use App\Repository\ValoracionRepository;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
@@ -19,16 +16,18 @@ class ValoracionController extends BaseController
     /**
      * @Route("/eliminar/{id}", name="valoracion_eliminar")
      */
-    public function eliminarComentario(int $id): RedirectResponse
+    public function eliminarValoracion(int $id): RedirectResponse
     {
         if (!$this->getUser()) {
             return $this->redirectToRoute('index');
         }
 
+        /** @var User $user */
+        $user = $this->getUser();
         $valoracion = $this->valoracionRepo->find($id);
         $spot = $valoracion->getSpot();
 
-        if ($valoracion->getUser() !== $this->getUser()) {
+        if (!$user->isAdmin() && $valoracion->getUser() !== $user) {
             $this->addFlash('danger', 'No puedes eliminar una valoración que no es tuya.');
             return $this->redirectToRoute('index');
         }

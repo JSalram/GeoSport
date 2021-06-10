@@ -19,7 +19,8 @@ header img:hover {
 header button:hover {
     background: rgba(0, 0, 0, 0.1);
 }
-header .carousel-caption h5 {
+header .carousel-caption h5,
+header .carousel-caption small {
     text-shadow: 0 0 8px black;
 }
 

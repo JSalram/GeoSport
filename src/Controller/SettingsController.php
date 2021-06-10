@@ -24,6 +24,7 @@ class SettingsController extends BaseController
         $spotsPagina = 10;
         $pagina = intval($request->get('p', 1));
         $paneSpots = $request->get('s', false);
+        $paneDeporte = $request->get('d', false);
 
         if (!$this->getUser()) {
             return $this->redirectToRoute('index');
@@ -62,6 +63,7 @@ class SettingsController extends BaseController
             }
         }
 
+        $deportes = $this->depRepo->findAll();
         $mySpots = $this->spotRepo->findByUser($usuario, $pagina, $spotsPagina);
         $maxPaginas = ceil(count($mySpots) / $spotsPagina);
 
@@ -70,6 +72,8 @@ class SettingsController extends BaseController
             'pagina' => $pagina,
             'maxPaginas' => $maxPaginas,
             'paneSpots' => $paneSpots,
+            'paneDeporte' => $paneDeporte,
+            'deportes' => $deportes,
         ]);
     }
 

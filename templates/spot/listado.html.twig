@@ -20,6 +20,12 @@
 
 {% block body %}
     <div class="container my-4">
+        <p class="mb-2">
+            <a class="text-decoration-none fw-bold" href="javascript:history.back()">
+                <i class="fas fa-arrow-left"></i>
+                Volver
+            </a>
+        </p>
         <h2>
             {% if provincia %}
                 {{ deporte.nombre|capitalize }} en {{ provincia.nombre }}
@@ -102,10 +108,8 @@
             {% endif %}
             {{ paginar(url, pagina, maxPaginas) }}
         {% else %}
-            <p>No hay spots de {{ deporte.nombre }} registrados
-                {% if provincia %}
-                en {{ provincia.nombre }}
-                {% endif %}.</p>
+            <p>No hay spots de {{ deporte.nombre }}
+                registrados{% if provincia %} en {{ provincia.nombre }}{% endif %}.</p>
         {% endif %}
     </div>
 {% endblock %}

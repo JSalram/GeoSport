@@ -18,12 +18,17 @@
                 <div class="row no-gutters row-bordered row-border-light">
                     <div class="col-md-3 pt-0">
                         <div class="list-group list-group-flush account-settings-links" id="list-tab" role="tablist">
-                            <a class="list-group-item list-group-item-action {% if not paneSpots %}active{% endif %}"
+                            <a class="list-group-item list-group-item-action
+                                {% if not paneSpots and not paneDeporte %}active{% endif %}"
                                data-bs-toggle="list" href="#account-general" role="tab">General</a>
                             <a class="list-group-item list-group-item-action" data-bs-toggle="list"
                                href="#account-change-password" role="tab">Cambiar contraseña</a>
                             <a class="list-group-item list-group-item-action {% if paneSpots %}active{% endif %}"
                                data-bs-toggle="list" href="#my-spots" role="tab">Mis spots</a>
+                            {% if app.user.admin %}
+                                <a class="list-group-item list-group-item-action {% if paneDeporte %}active{% endif %}"
+                                   data-bs-toggle="list" href="#crud-deportes" role="tab">Administrar deportes</a>
+                            {% endif %}
                         </div>
                     </div>
                     <div class="col-md-9">
@@ -31,6 +36,7 @@
                             {% include 'settings/paneGeneral.html.twig' %}
                             {% include 'settings/panePassword.html.twig' %}
                             {% include 'settings/paneSpots.html.twig' %}
+                            {% include 'settings/paneDeportes.html.twig' %}
                         </div>
                     </div>
                 </div>
@@ -44,6 +50,7 @@
         </div>
     </form>
 
+    {# TOAST AJUSTES GUARDADOS CORRECTAMENTE O NO #}
     {% include 'comunes/_ajustesGuardados.html.twig' %}
 
     <script>

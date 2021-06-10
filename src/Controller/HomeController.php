@@ -96,7 +96,7 @@ class HomeController extends BaseController
      */
     public function filtrarSpots(Request $request): JsonResponse
     {
-        $spotsPagina = 5;
+        $spotsPagina = 3;
         $pagina = intval($request->get('p', 1));
 
         if ($request->isXmlHttpRequest()) {

@@ -1,4 +1,4 @@
-<div class="tab-pane fade {% if not paneSpots %}active show{% endif %}" id="account-general" role="tabpanel">
+<div class="tab-pane fade {% if not paneSpots and not paneDeporte %}active show{% endif %}" id="account-general" role="tabpanel">
 
     <div class="card-body media align-items-center">
         <div class="d-flex align-items-center">
@@ -32,6 +32,40 @@
             <label class="form-label" for="email">Correo electrónico</label>
             <input id="email" type="email" name="email" class="form-control mb-1" value="{{ app.user.email }}">
         </div>
+
+        <div class="row mt-3">
+            <div class="col-sm-6">
+            <p>Rol actual:
+                <span class="text-primary fw-bold">
+                {% if app.user.admin %}
+                    ADMIN
+                    {% set info = "Administrador del sistema" %}
+                {% elseif app.user.moderador %}
+                    MODERADOR
+                    {% set info = "Permisos para revisar (aceptar o rechazar) spots" %}
+                {% else %}
+                    USUARIO
+                    {% set info = "Usuario estándar. Tras realizar varias interacciones en la web ascenderá a moderador" %}
+                {% endif %}
+            </span>
+                <i tabindex="0" class="fas fa-info-circle" role="button" data-bs-container="body"
+                   data-bs-toggle="popover"
+                   data-bs-trigger="focus" data-bs-placement="right" title="Roles de usuario"
+                   data-bs-content="{{ info }}"></i>
+            </p>
+            </div>
+            <div class="col-sm-6">
+                <p>Valoraciones totales: {{ app.user.valoraciones.count }}</p>
+            </div>
+        </div>
     </div>
 
 </div>
+
+<script>
+    var popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'))
+    var popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
+        return new bootstrap.Popover(popoverTriggerEl);
+    });
+
+</script>

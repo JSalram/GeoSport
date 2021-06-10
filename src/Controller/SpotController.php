@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Spot;
+use App\Entity\User;
 use App\Form\SpotType;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -182,7 +183,10 @@ class SpotController extends BaseController
             return $this->redirectToRoute('index');
         }
 
-        if ($spot->getUser() !== $this->getUser()) {
+        /** @var User $user */
+        $user = $this->getUser();
+
+        if (!$user->isAdmin() && $spot->getUser() !== $user) {
             $this->addFlash('danger', 'No puedes eliminar un spot que no es tuyo');
             return $this->redirectToRoute('index');
         }
