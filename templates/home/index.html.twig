@@ -84,7 +84,7 @@
                 <div id="nuevoSpot" class="col-md-4">
                     <h4 class="my-4">O añade uno tú mismo</h4>
                     <a href="{{ path('spot_new') }}" class="btn btn-outline-success">
-                        <i class="fas fa-upload"></i> Nuevo Spot
+                        <i class="fas fa-map-marker-alt"></i> Nuevo Spot
                     </a>
                 </div>
                 {% endif %}
@@ -96,7 +96,7 @@
         <div id="popular" class="container my-5">
             <h3 class="my-5 text-center">Spots populares <span id="deporteSeleccionado"></span></h3>
             <div class="row">
-                <div class="col-md-4 p-4 border">
+                <div id="filtro" class="col-md-4 p-4 border">
                     <h5>Filtrar por</h5>
                     {% for deporte in deportes %}
                         <div class="form-check my-2">
@@ -113,7 +113,7 @@
                         <option value="notaMedia">Valoración</option>
                         <option value="fecha">Recientes</option>
                     </select>
-                    <button class="btn btn-primary my-4 w-100">Filtrar</button>
+                    <button class="btn btn-primary my-4 w-100"><i class="fas fa-filter"></i> Filtrar</button>
                     <div id="loading" class="text-center"><i class="fas fa-spinner"></i> Cargando...</div>
                 </div>
                 <div class="col-md-8 spots py-2">

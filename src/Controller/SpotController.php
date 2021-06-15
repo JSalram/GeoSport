@@ -63,7 +63,8 @@ class SpotController extends BaseController
             'deporte' => $deporte,
             'provincia' => $provincia,
             'pagina' => $pagina,
-            'maxPaginas' => $maxPaginas
+            'maxPaginas' => $maxPaginas,
+            'order' => $order
         ]);
     }
 
@@ -171,7 +172,6 @@ class SpotController extends BaseController
 
     /**
      * @Route("/eliminar/{id}", name="spot_remove")
-     * @param string $deporte
      * @param int $id
      * @return RedirectResponse
      */

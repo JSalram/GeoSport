@@ -38,7 +38,7 @@
             <hr class="bg-dark">
 
             <div class="row">
-                <div class="col-md-4 col-lg-3 border">
+                <div id="filtro" class="col-md-4 col-lg-3 border">
                     <h6 class="mt-2">Opciones:</h6>
                     {% if app.user and app.user.verified %}
                         {% if provincia is defined and provincia %}
@@ -47,33 +47,32 @@
                             <a href="{{ path('dep_spot_new', {'deporte': deporte.nombre}) }}"
                         {% endif %}
                         class="btn btn-primary my-2 w-100">
-                            Añadir nuevo spot
+                            <i class="fas fa-map-marker-alt"></i> Añadir nuevo spot
                         </a>
                     {% endif %}
                     {% if provincia is defined and provincia %}
-                        <a href="{{ path('mapa_prov', {'deporte': deporte.nombre, 'provincia': provincia.nombre}) }}"
-                           class="btn btn-outline-primary my-2 w-100">Ver mapa</a>
+                    <a href="{{ path('mapa_prov', {'deporte': deporte.nombre, 'provincia': provincia.nombre}) }}"
                     {% else %}
-                        <a href="{{ path('mapa', {'deporte': deporte.nombre}) }}"
-                           class="btn btn-outline-primary my-2 w-100">Ver mapa</a>
-                    {% endif %}
+                    <a href="{{ path('mapa', {'deporte': deporte.nombre}) }}"
+                            {% endif %}
+                       class="btn btn-outline-primary my-2 w-100 bg-light"><i class="fas fa-map-marked-alt"></i> Ver mapa</a>
 
                     <h6 class="mt-2">Ver spots:</h6>
                     <div class="my-2 list-group">
-                        <a class="list-group-item"
-                                {% if provincia is defined and provincia %}
-                           href="{{ path('spots_prov', {'deporte': deporte.nombre, 'provincia': provincia.nombre ,'order': 'fecha'}) }}">
-                            {% else %}
-                                href="{{ path('spots', {'deporte': deporte.nombre, 'order': 'fecha'}) }}">
-                            {% endif %}
-                            Recientes</a>
-                        <a class="list-group-item"
+                        <a class="list-group-item {{ order == 'notaMedia' ? 'active' }}"
                                 {% if provincia is defined and provincia %}
                            href="{{ path('spots_prov', {'deporte': deporte.nombre, 'provincia': provincia.nombre ,'order': 'notaMedia'}) }}">
                             {% else %}
                                 href="{{ path('spots', {'deporte': deporte.nombre, 'order': 'notaMedia'}) }}">
                             {% endif %}
                             Mejor valorados</a>
+                        <a class="list-group-item {{ order == 'fecha' ? 'active' }}"
+                                {% if provincia is defined and provincia %}
+                           href="{{ path('spots_prov', {'deporte': deporte.nombre, 'provincia': provincia.nombre ,'order': 'fecha'}) }}">
+                            {% else %}
+                                href="{{ path('spots', {'deporte': deporte.nombre, 'order': 'fecha'}) }}">
+                            {% endif %}
+                            Recientes</a>
                     </div>
                 </div>
                 <div class="col-md-8 col-lg-9 py-4">

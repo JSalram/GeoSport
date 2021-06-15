@@ -8,6 +8,7 @@
             <tr>
                 <th>Nombre</th>
                 <th>Descripción</th>
+                <th>Foto</th>
                 <th></th>
             </tr>
             </thead>
@@ -16,6 +17,8 @@
                 <tr>
                     <td>{{ deporte.nombre }}</td>
                     <td>{{ deporte.descripcion }}</td>
+                    <td><img src="{{ asset('img/'~deporte.nombre~'_header.jpg') }}" class="img-fluid border"
+                             style="max-height: 50px"></td>
                     <td>
                         <a href="{{ path('deporte_edit', {'id': deporte.id}) }}">
                             <i class="fas fa-edit"></i>

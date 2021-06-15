@@ -23,6 +23,10 @@ a {
     color: #0FA3B1;
 }
 
+#filtro {
+    background-color: #B9CBC0;
+}
+
 a:hover {
     color: var(--primary-hover);
 }
@@ -71,7 +75,7 @@ a:hover {
 }
 
 .btn-outline-primary:hover {
-    background-color: var(--primary-hover);
+    background-color: var(--primary-hover) !important;
 }
 
 .form-check-input:checked {
@@ -81,6 +85,11 @@ a:hover {
 
 .dropdown-item:active {
     color: #fff !important;
+}
+
+.list-group-item.active {
+    background-color: var(--primary-active);
+    border-color: var(--primary-active);
 }
 
 /* MEDIA QUERYS */

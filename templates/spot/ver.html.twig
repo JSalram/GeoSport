@@ -44,15 +44,19 @@
                 </div>
                 <div>
                     {% if app.user and spot.aprobado and not spot.hasValoracion(app.user) %}
-                        <a href="#comentar" class="btn btn-success my-1 w-100">Deja tu valoración</a>
+                        <a href="#comentar" class="btn btn-success my-1 w-100">
+                            <i class="far fa-comment"></i> Deja tu valoración
+                        </a>
                     {% endif %}
                     {% if app.user and (spot.user == app.user or app.user.admin) %}
                         <div class="my-1 d-flex">
                             <button type="button" class="btn btn-warning w-100 mx-1" data-bs-toggle="modal"
-                                    data-bs-target="#modalEditarSpot">Editar
+                                    data-bs-target="#modalEditarSpot">
+                                <i class="fas fa-edit"></i> Editar
                             </button>
                             <button type="button" class="btn btn-danger w-100 mx-1" data-bs-toggle="modal"
-                                    data-bs-target="#modalEliminarSpot">Eliminar
+                                    data-bs-target="#modalEliminarSpot">
+                                <i class="fas fa-trash-alt"></i> Eliminar
                             </button>
                         </div>
                     {% endif %}
