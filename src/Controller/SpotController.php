@@ -19,7 +19,7 @@ class SpotController extends BaseController
      * @Route("/mapa/{deporte}", name="mapa")
      * @Route("/mapa/{deporte}/{provincia}", name="mapa_prov")
      */
-    public function mapa(string $deporte, string $provincia = null)
+    public function mapa(string $deporte, string $provincia = null): Response
     {
         $deporte = $this->depRepo->findOneBy(['nombre' => $deporte]);
         $spots = $this->spotRepo->findBy(['deporte' => $deporte, 'aprobado' => true]);

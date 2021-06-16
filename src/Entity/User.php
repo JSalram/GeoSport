@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\UserRepository;
 use DateTime;
+use DateTimeInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -260,12 +261,12 @@ class User implements UserInterface
         return $this;
     }
 
-    public function getUltimoAcceso(): ?\DateTimeInterface
+    public function getUltimoAcceso(): ?DateTimeInterface
     {
         return $this->ultimoAcceso;
     }
 
-    public function setUltimoAcceso(?\DateTimeInterface $ultimoAcceso): self
+    public function setUltimoAcceso(?DateTimeInterface $ultimoAcceso): self
     {
         $this->ultimoAcceso = $ultimoAcceso;
 

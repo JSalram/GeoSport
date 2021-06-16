@@ -43,7 +43,7 @@ class HomeController extends BaseController
      * @param Request $request
      * @return Response
      */
-    public function busqueda(Request $request)
+    public function busqueda(Request $request): Response
     {
         $provincia = $this->provRepo->findOneBy(['nombre' => $request->get('provincia')]);
         if (!$provincia) {
@@ -59,9 +59,10 @@ class HomeController extends BaseController
 
     /**
      * @Route("/revision", name="revision")
+     * @param Request $request
      * @return Response
      */
-    public function revision(Request $request)
+    public function revision(Request $request): Response
     {
         $spotsPendientes = $this->spotRepo->findBy(['aprobado' => null]);
         if (empty($spotsPendientes)) {

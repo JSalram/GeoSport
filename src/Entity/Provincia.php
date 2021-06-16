@@ -36,7 +36,8 @@ class Provincia
 
     /**
      * Provincia constructor.
-     * @param $nombre
+     * @param null $nombre
+     * @param null $coord
      */
     public function __construct($nombre = null, $coord = null)
     {

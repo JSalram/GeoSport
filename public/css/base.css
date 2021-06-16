@@ -31,7 +31,26 @@ a:hover {
     color: var(--primary-hover);
 }
 
-/* BOOTSTRAP */
+/***** REVISIÓN *****/
+@keyframes pulse {
+    0% {
+        transform: scale(0.8, 0.8);
+    }
+
+    50% {
+        transform: scale(1, 1);
+    }
+
+    100% {
+        transform: scale(0.8, 0.8);
+    }
+}
+
+#revision {
+    animation: pulse 1.25s linear infinite;
+}
+
+/***** BOOTSTRAP *****/
 .btn-success {
     background-color: var(--success);
     border-color: var(--success) !important;
@@ -92,7 +111,7 @@ a:hover {
     border-color: var(--primary-active);
 }
 
-/* MEDIA QUERYS */
+/***** MEDIA QUERYS *****/
 @media (max-width: 400px) {
     .toast {
         width: 100%;

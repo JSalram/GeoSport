@@ -8,7 +8,6 @@ use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\Tools\Pagination\Paginator;
 use Doctrine\Persistence\ManagerRegistry;
-use phpDocumentor\Reflection\Types\This;
 
 /**
  * @method Spot|null find($id, $lockMode = null, $lockVersion = null)
@@ -37,6 +36,7 @@ class SpotRepository extends ServiceEntityRepository
      * @param int $spotsPagina
      * @param Deporte|null $deporte
      * @param string $orderBy
+     * @param null $provincia
      * @return Paginator Returns an array of Spot objects
      */
     public function findSpotsBy(int $pagina = 1, int $spotsPagina = 5,
@@ -61,7 +61,7 @@ class SpotRepository extends ServiceEntityRepository
         return $this->paginacion($query, $pagina, $spotsPagina);
     }
 
-    public function findByUser(User $user, int $pagina, int $spotsPagina)
+    public function findByUser(User $user, int $pagina, int $spotsPagina): Paginator
     {
         $query = $this->createQueryBuilder('s')
             ->andWhere('s.user = :user')

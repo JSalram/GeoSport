@@ -2,7 +2,6 @@
 
 namespace App\Controller;
 
-use App\Entity\User;
 use App\Repository\DeporteRepository;
 use App\Repository\ProvinciaRepository;
 use App\Repository\SpotRepository;
@@ -10,6 +9,7 @@ use App\Repository\UserRepository;
 use App\Repository\ValoracionRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 class BaseController extends AbstractController
@@ -47,5 +47,14 @@ class BaseController extends AbstractController
         $this->valoracionRepo = $valoracionRepo;
         $this->userRepo = $userRepo;
         $this->passwordEncoder = $passwordEncoder;
+    }
+
+    protected function render(string $view, array $parameters = [], Response $response = null): Response
+    {
+        // Marca si hay revisiones pendientes o no
+        $spotsPendientes = $this->spotRepo->findBy(['aprobado' => null]);
+        $parameters['revision'] = !empty($spotsPendientes);
+
+        return parent::render($view, $parameters, $response);
     }
 }

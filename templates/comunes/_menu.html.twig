@@ -21,7 +21,9 @@
                             {% if app.user.puedeRevisar %}
                                 <li>
                                     <a href="{{ path('revision') }}" class="text-success dropdown-item">
-                                        Revisar Spots</a>
+                                        {% if revision %}<i id="revision" class="fas fa-circle fs-6"></i>{% endif %}
+                                        Revisar Spots
+                                    </a>
                                 </li>
                             {% endif %}
                             <li>
