@@ -55,7 +55,8 @@
                     {% else %}
                     <a href="{{ path('mapa', {'deporte': deporte.nombre}) }}"
                             {% endif %}
-                       class="btn btn-outline-primary my-2 w-100 bg-light"><i class="fas fa-map-marked-alt"></i> Ver mapa</a>
+                       class="btn btn-outline-primary my-2 w-100 bg-light"><i class="fas fa-map-marked-alt"></i> Ver
+                        mapa</a>
 
                     <h6 class="mt-2">Ver spots:</h6>
                     <div class="my-2 list-group">
@@ -101,14 +102,24 @@
             </div>
 
             {% if provincia %}
-                {% set url = path('spots_prov', {'deporte': deporte.nombre, 'provincia': provincia.nombre}) %}
+                {% set url = path('spots_prov', {
+                    'deporte': deporte.nombre, 'provincia': provincia.nombre, 'order': order
+                }) %}
             {% else %}
-                {% set url = path('spots', {'deporte': deporte.nombre}) %}
+                {% set url = path('spots', {'deporte': deporte.nombre, 'order': order}) %}
             {% endif %}
-            {{ paginar(url, pagina, maxPaginas) }}
+            {{ paginar(url, pagina, maxPaginas, true) }}
         {% else %}
             <p>No hay spots de {{ deporte.nombre }}
-                registrados{% if provincia %} en {{ provincia.nombre }}{% endif %}.</p>
+                registrados{% if provincia %} en {{ provincia.nombre }}{% endif %}, pero puedes añadir uno tú mismo:</p>
+            {% if provincia is defined and provincia %}
+                <a href="{{ path('dep_prov_spot_new', {'deporte': deporte.nombre, 'provincia': provincia.nombre}) }}"
+            {% else %}
+                <a href="{{ path('dep_spot_new', {'deporte': deporte.nombre}) }}"
+            {% endif %}
+            class="btn btn-primary my-2 w-100">
+                <i class="fas fa-map-marker-alt"></i> Añadir nuevo spot
+            </a>
         {% endif %}
     </div>
 {% endblock %}

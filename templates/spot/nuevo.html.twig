@@ -17,15 +17,21 @@
 
 {% block body %}
     <div class="container my-4">
+        <p class="mb-2">
+            <a class="text-decoration-none fw-bold" href="javascript:history.back()">
+                <i class="fas fa-arrow-left"></i>
+                Volver
+            </a>
+        </p>
         {% if editar is defined and editar %}
-            <h2>Editar spot
-        {% else %}
+        <h2>Editar spot
+            {% else %}
             <h2>Nuevo spot
-        {% endif %}
-        {% if deporte is defined and deporte %}
-            de {{ deporte|capitalize }}
-        {% endif %}
-        </h2>
+                {% endif %}
+                {% if deporte is defined and deporte %}
+                    de {{ deporte|capitalize }}
+                {% endif %}
+            </h2>
 
             {{ form_start(form) }}
             {{ form_row(form.nombre) }}
