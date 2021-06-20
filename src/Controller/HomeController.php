@@ -64,6 +64,13 @@ class HomeController extends BaseController
      */
     public function revision(Request $request): Response
     {
+        /** @var User $user */
+        $user = $this->getUser();
+        if (!$user || !$user->puedeRevisar()) {
+            $this->addFlash('danger', 'No tienes permisos para revisar.');
+            return $this->redirectToRoute('index');
+        }
+
         $spotsPendientes = $this->spotRepo->findBy(['aprobado' => null]);
         if (empty($spotsPendientes)) {
             $this->addFlash('info', 'No hay spots en revisión en estos momentos. Inténtelo de nuevo más tarde.');
