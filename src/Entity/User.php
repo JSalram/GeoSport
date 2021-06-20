@@ -13,7 +13,8 @@ use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
  * @ORM\Entity(repositoryClass=UserRepository::class)
- * @UniqueEntity(fields={"username"}, message="There is already an account with this username")
+ * @UniqueEntity(fields={"username"}, message="Ya existe una cuenta con este nombre de usuario")
+ * @UniqueEntity(fields={"email"}, message="Ya existe una cuenta con este correo electrónico")
  */
 class User implements UserInterface
 {

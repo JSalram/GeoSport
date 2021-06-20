@@ -1,0 +1,14 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Password Reset Email Sent{% endblock %}
+
+{% block body %}
+    <div class="container my-4">
+        <p>
+            Hemos enviado un correo electrónico con un link para recuperar su contraseña.
+        </p>
+        <p>El link expirará en 1 hora.</p>
+        <p>Si no has recibido ningún correo, por favor comprueba la carpeta de spam o <a
+                    href="{{ path('app_forgot_password_request') }}">vuelve a intentarlo</a>.</p>
+    </div>
+{% endblock %}

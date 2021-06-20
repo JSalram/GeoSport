@@ -53,7 +53,8 @@ function filtrarSpots() {
             loading.show();
         }
     }).done(function (spots) {
-        $('#deporteSeleccionado').text('(' + deporte + ')');
+        let tipo = (orden === 'notaMedia') ? 'populares' : 'recientes';
+        $('#popular #titulo').text(`Spots ${tipo} (${deporte})`);
         bestSpots.empty();
         loading.hide();
         spots.forEach(function (spot, index) {
@@ -90,7 +91,7 @@ function filtrarSpots() {
                 dragging: false,
                 doubleClickZoom: false,
                 scrollWheelZoom: false
-            }).setView([lat+0.0005, lng], 14);
+            }).setView([lat + 0.0005, lng], 14);
 
             L.marker([lat, lng]).addTo(mapa);
 
